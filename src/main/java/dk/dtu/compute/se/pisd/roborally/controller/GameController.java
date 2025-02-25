@@ -57,12 +57,14 @@ public class GameController {
         //     if and when the player is moved (the counter and the status line
         //     message needs to be implemented at another place)
 
+
         Player currentPlayer = board.getCurrentPlayer(); // Get the current player
 
-        if (space != null && space.getPlayer()!= null) { // Check if the player exists and the space is free
-            space.setPlayer(currentPlayer); // Set the current space to the player
-            int n = board.getPlayersNumber();
-            Player next = board.getPlayer(n + 1);
+        if (space != null && space.getPlayer()== null) { // Check if the player exists and the space is free
+
+          if(currentPlayer.getSpace() != null){
+              currentPlayer.getSpace().setPlayer(null);
+          }
 
 
             currentPlayer.setSpace(space); // Move the player to the new space
