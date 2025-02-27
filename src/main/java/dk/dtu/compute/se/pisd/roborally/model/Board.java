@@ -212,9 +212,10 @@ public class Board extends Subject {
         // status of the game
 
         // TODO V1: add the move count to the status message
+        // Liam har lavet denne.
+        return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount();
         // TODO V2: changed the status so that it shows the phase, the current player, and the current register
 
-        return "Player = " + getCurrentPlayer().getName();
     }
     public void incrementMoveCount() {
         moveCount++;
