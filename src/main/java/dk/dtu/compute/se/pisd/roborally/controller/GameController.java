@@ -46,17 +46,7 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
 
-
-        // TODO V1: method should be implemented by the students:
-        //   - the current player should be moved to the given space
-        //     (if it is free())
-        //   - and the current player should be set to the player
-        //     following the current player
-        //   - the counter of moves in the game should be increased by one
-        //     if and when the player is moved (the counter and the status line
-        //     message needs to be implemented at another place)
-
-
+        // the method implemented
         Player currentPlayer = board.getCurrentPlayer(); // Get the current player
 
         if (space != null && space.getPlayer()== null) { // Check if the player exists and the space is free
@@ -65,14 +55,10 @@ public class GameController {
               currentPlayer.getSpace().setPlayer(null);
           }
 
-
-
-            space.setPlayer(currentPlayer); // Set the player in the new space
-            board.incrementMoveCount(); // Increment the move count
-
-            // Set the next player as the current player
-            int nextPlayerIndex = (board.getPlayerNumber(currentPlayer) + 1) % board.getPlayersNumber();
-            board.setCurrentPlayer(board.getPlayer(nextPlayerIndex));
+          space.setPlayer(currentPlayer); // Set the player in the new space
+          // Set the next player as the current player
+          int nextPlayerIndex = (board.getPlayerNumber(currentPlayer) + 1) % board.getPlayersNumber();
+          board.setCurrentPlayer(board.getPlayer(nextPlayerIndex));
         }
     }
 
@@ -216,24 +202,63 @@ public class GameController {
         }
     }
 
-    // TODO V2
+    // Implemented by Liam
     public void moveForward(@NotNull Player player) {
-
+        // Get the current space of the player
+        Space currentSpace = player.getSpace();
+        if (currentSpace != null) {
+            // Calculate the new coordinates for the player (moving up one space)
+            int newX = currentSpace.x;
+            int newY = currentSpace.y - 1; // Move up one space
+            if (newY >= 0) {
+                // Get the new space on the board
+                Space newSpace = board.getSpace(newX, newY);
+                // Check if the new space is free
+                if (newSpace.getPlayer() == null) {
+                    // Remove the player from the current space
+                    currentSpace.setPlayer(null);
+                    // Place the player in the new space
+                    newSpace.setPlayer(player);
+                    // Update the player's space reference
+                    player.setSpace(newSpace);
+                    // Increment the move count on the board
+                    board.incrementMoveCount();
+                }
+            }
+        }
     }
 
-    // TODO V2
+    // Implemented by Liam
     public void fastForward(@NotNull Player player) {
-
+        // Move the player forward once
+        moveForward(player);
+        // Move the player forward again
+        moveForward(player);
     }
 
-    // TODO V2
+    // Implemented by Liam
     public void turnRight(@NotNull Player player) {
+        // Get the current direction of the player
+        Heading currentDirection = player.getHeading();
+
+        // Calculate the new direction (90 degrees clockwise)
+        Heading newDirection = Heading.values()[(currentDirection.ordinal() + 1) % Heading.values().length];
+
+        // Update the player's direction
+        player.setHeading(newDirection);
 
     }
 
-    // TODO V2
+    // Implemented by Liam
     public void turnLeft(@NotNull Player player) {
+        // Get the current direction of the player
+        Heading currentDirection = player.getHeading();
 
+        // Calculate the new direction (90 degrees counterclockwise)
+        Heading newDirection = Heading.values()[(currentDirection.ordinal() + Heading.values().length - 1) % Heading.values().length];
+
+        // Update the player's direction
+        player.setHeading(newDirection);
     }
 
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {

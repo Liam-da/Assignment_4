@@ -33,6 +33,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +63,7 @@ public class AppController implements Observer {
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
 
+        //If a game is already running, it tries to stop it first (stopGame()).
         if (result.isPresent()) {
             if (gameController != null) {
                 // The UI should not allow this, but in case this happens anyway.
@@ -90,11 +92,23 @@ public class AppController implements Observer {
     }
 
     public void saveGame() {
-        // TODO V4a: needs to be implemented
+        // Implemented by Liam
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("roborally_save.dat"))) {
+            out.writeObject(gameController.board);
+            System.out.println("RoboRally game saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error saving RoboRally game: " + e.getMessage());
+        }
     }
 
     public void loadGame() {
-        // TODO V4a: needs to be implemented
+        // Implemented by Liam
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("roborally_save.dat"))) {
+            out.writeObject(gameController.board);
+            System.out.println("RoboRally game saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error saving RoboRally game: " + e.getMessage());
+        }
         // for now, we just create a new game
         if (gameController == null) {
             newGame();
@@ -110,6 +124,10 @@ public class AppController implements Observer {
      *
      * @return true if the current game was stopped, false otherwise
      */
+
+    //Saves the game
+    //Removes the gameController, effectively stopping the game
+    //Updates the UI to reflect that no game is running.
     public boolean stopGame() {
         if (gameController != null) {
 
@@ -123,6 +141,8 @@ public class AppController implements Observer {
         return false;
     }
 
+    //If a game is running, it asks the user for confirmation before exiting.
+    //If no game is running (or the user agrees to exit), the application shuts down.
     public void exit() {
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);

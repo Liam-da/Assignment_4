@@ -120,10 +120,12 @@ public class Board extends Subject {
         }
     }
 
+    // gets the current player's turn.
     public Player getCurrentPlayer() {
         return current;
     }
 
+    // changes the current player and notifies.
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
@@ -131,6 +133,7 @@ public class Board extends Subject {
         }
     }
 
+    //Tracks step-by-step execution
     public Phase getPhase() {
         return phase;
     }
@@ -183,11 +186,14 @@ public class Board extends Subject {
      * @return the space in the given direction; null if there is no (reachable) neighbour
      */
     public Space getNeighbour(@NotNull Space space, @NotNull Heading heading) {
-        // TODO A3: This implementation needs to be adjusted so that walls on
-        //          spaces (and maybe other obstacles) are taken into account
-        //          (see above JavaDoc comment for this method).
+        // Implemented by Liam
         int x = space.x;
         int y = space.y;
+        // Check if there's a wall in the given direction before calculating the neighbor
+        List<Heading> walls = space.getWalls();
+        if (walls.contains(heading)) {
+            return null; // No neighbor in this direction due to a wall
+        }
         switch (heading) {
             case SOUTH:
                 y = (y + 1) % height;
@@ -211,10 +217,9 @@ public class Board extends Subject {
         // the students, this method gives a string representation of the current
         // status of the game
 
-        // TODO V1: add the move count to the status message
-        // Liam har lavet denne.
+        // Implemented by Liam
         return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount();
-        // TODO V2: changed the status so that it shows the phase, the current player, and the current register
+
 
     }
     public void incrementMoveCount() {
