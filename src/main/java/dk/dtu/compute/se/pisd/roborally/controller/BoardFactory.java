@@ -4,6 +4,9 @@ import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A factory for creating boards. The factory itself is implemented as a singleton.
  *
@@ -23,6 +26,16 @@ public class BoardFactory {
     private BoardFactory() {
     }
 
+    //Implemented by Liam.
+    // Method to get available board names
+    public List<String> getAvailableBoardNames() {
+        List<String> availableBoardNames = new ArrayList<>();
+        availableBoardNames.add("Classic");
+        availableBoardNames.add("Advanced");
+        // Add more board names as required
+        return availableBoardNames;
+    }
+
     /**
      * Returns the single instance of this factory. The instance is lazily
      * instantiated when requested for the first time.
@@ -35,6 +48,7 @@ public class BoardFactory {
         }
         return instance;
     }
+
 
     /**
      * Creates a new board of given name of a board, which indicates
@@ -80,6 +94,12 @@ public class BoardFactory {
         action  = new ConveyorBelt();
         action.setHeading(Heading.WEST);
         space.getActions().add(action);
+
+        // Implemented by Liam.
+        // Adding a checkpoint at a specific location
+        space = board.getSpace(4,4);
+        Checkpoint checkpoint = new Checkpoint(4,4); // Checkpoint position
+        space.getActions().add(checkpoint); // Add the checkpoint to the space
 
         return board;
     }

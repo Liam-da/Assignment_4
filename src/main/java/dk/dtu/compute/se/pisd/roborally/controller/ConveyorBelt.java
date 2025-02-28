@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -66,4 +67,26 @@ public class ConveyorBelt extends FieldAction {
         return false;
     }
 
+}
+
+// Implemented by Liam.
+// creating a Checkpoint class.
+class Checkpoint extends FieldAction{
+    private int x;
+    private int y;
+
+    public Checkpoint(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public void ExecuteAction(){
+        System.out.println("Checkpoint reached at  (" + x + ", " + y + ")");
+    }
+
+    @Override
+    public boolean doAction(GameController gameController, Space space) {
+        ExecuteAction();
+        return false;
+    }
 }

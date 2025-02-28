@@ -52,10 +52,12 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
+    private BoardFactory boardFactory = BoardFactory.getInstance(); // Singleton instance
 
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
     }
+    
 
     public void newGame() {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
@@ -75,18 +77,18 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = new Board(8,8);
+
+            //Implemented by Liam. 
+            Board board = boardFactory.createBoard(String.valueOf(result.get()));
             gameController = new GameController(board);
-            int no = result.get();
+            int no = 2; // Default number of players, can be modified as needed
             for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+                Player player = new Player(board, "color" + i, "Player " + (i + 1));
                 board.addPlayer(player);
                 player.setSpace(board.getSpace(i % board.width, i));
             }
 
-            // XXX V2
             gameController.startProgrammingPhase();
-
             roboRally.createBoardView(gameController);
         }
     }
