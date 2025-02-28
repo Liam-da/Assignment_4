@@ -46,7 +46,6 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
 
-        // det er bare en test-
 
         // TODO V1: method should be implemented by the students:
         //   - the current player should be moved to the given space
@@ -67,7 +66,7 @@ public class GameController {
           }
 
 
-            currentPlayer.setSpace(space); // Move the player to the new space
+
             space.setPlayer(currentPlayer); // Set the player in the new space
             board.incrementMoveCount(); // Increment the move count
 
