@@ -56,7 +56,7 @@ public class GameController {
           }
 
           space.setPlayer(currentPlayer); // Set the player in the new space
-          // Set the next player as the current player
+
           int nextPlayerIndex = (board.getPlayerNumber(currentPlayer) + 1) % board.getPlayersNumber();
           board.setCurrentPlayer(board.getPlayer(nextPlayerIndex));
         }
