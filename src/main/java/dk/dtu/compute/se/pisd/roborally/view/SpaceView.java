@@ -23,13 +23,18 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
+import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
+
 
 /**
  * ...
@@ -91,6 +96,43 @@ public class SpaceView extends StackPane implements ViewObserver {
     public void updateView(Subject subject) {
         if (subject == this.space) {
             this.getChildren().clear();
+
+            for (FieldAction action: space.getActions()){
+                if (action instanceof CheckPoint) {
+                    Circle circle = new Circle();
+                    circle.setRadius(SPACE_WIDTH/2);
+                    this.getChildren().add( circle );
+
+                    Text text = new Text(Integer.toString(((CheckPoint) action).getX()));
+                    text.setFill(Color.YELLOW);
+                    this.getChildren().add( text );
+
+                }
+            }
+
+            space.getWalls();
+            for (Heading wall: space.getWalls()){
+                if (wall == Heading.NORTH){
+                    Rectangle rectangle = new Rectangle();
+                    rectangle.setX(0);
+                    rectangle.setY(0);
+                    rectangle.setWidth(SPACE_WIDTH);
+                    rectangle.setHeight(1);
+                    rectangle.setFill(Color.RED);
+                    this.getChildren().add(rectangle);
+
+                }
+
+                if (wall == Heading.EAST){
+
+                }
+                if (wall == Heading.SOUTH){
+
+                }
+                if (wall == Heading.WEST){
+
+                }
+            }
 
             updatePlayer();
         }

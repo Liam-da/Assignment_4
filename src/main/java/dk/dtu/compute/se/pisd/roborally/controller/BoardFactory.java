@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
+import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
@@ -98,8 +99,12 @@ public class BoardFactory {
         // Implemented by Liam.
         // Adding a checkpoint at a specific location
         space = board.getSpace(4,4);
-        Checkpoint checkpoint = new Checkpoint(4,4); // Checkpoint position
+        CheckPoint checkpoint = new CheckPoint(1); // Checkpoint position
         space.getActions().add(checkpoint); // Add the checkpoint to the space
+
+        space = board.getSpace(6,6);
+        CheckPoint checkpoint2 = new CheckPoint(2); // Checkpoint position
+        space.getActions().add(checkpoint2); // Add the checkpoint to the space
 
         return board;
     }
