@@ -49,7 +49,7 @@ public class GameController {
         // the method implemented
         Player currentPlayer = board.getCurrentPlayer(); // Get the current player
 
-        if (space != null && space.getPlayer()== null) { // Check if the player exists and the space is free
+        if (space.getPlayer() == null) { // Check if the player exists and the space is free
 
           if(currentPlayer.getSpace() != null){
               currentPlayer.getSpace().setPlayer(null);
@@ -281,5 +281,6 @@ public class GameController {
         // XXX just for now to indicate that the actual method is not yet implemented
         assert false;
     }
+
 
 }

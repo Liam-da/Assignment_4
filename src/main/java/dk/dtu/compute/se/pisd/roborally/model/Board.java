@@ -72,6 +72,7 @@ public class Board extends Subject {
             }
         }
         this.stepMode = false;
+
     }
 
     public Board(int width, int height) {

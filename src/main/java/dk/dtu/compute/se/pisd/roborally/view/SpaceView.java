@@ -63,7 +63,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.setStyle("-fx-background-color: black;");
         }
 
-        // updatePlayer();
+        updatePlayer();
 
         // This space view should listen to changes of the space
         space.attach(this);
@@ -91,27 +91,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     public void updateView(Subject subject) {
         if (subject == this.space) {
             this.getChildren().clear();
-
-            // Add walls
-            //Implemented by Liam.
-            for (Heading wall : space.getWalls()) {
-                Polygon wallPolygon = new Polygon(0.0, 0.0, 10.0, 20.0, 20.0, 0.0);
-                wallPolygon.setFill(Color.GRAY);
-                wallPolygon.setRotate((90 * wall.ordinal()) % 360);
-                this.getChildren().add(wallPolygon);
-            }
-
-            // Add actions (e.g., conveyor belts, checkpoints)
-            for (FieldAction action : space.getActions()) {
-                Polygon actionPolygon = new Polygon(0.0, 0.0, 10.0, 20.0, 20.0, 0.0);
-                actionPolygon.setFill(Color.BLUE); // Customize based on action type
-                this.getChildren().add(actionPolygon);
-            }
-
-
-            // XXX A3: drawing walls and action on the space (could be done
-            //         here); it would be even better if fixed things on
-            //         spaces  are only drawn once (and not on every update)
 
             updatePlayer();
         }

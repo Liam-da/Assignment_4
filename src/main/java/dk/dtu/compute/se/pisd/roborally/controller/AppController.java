@@ -38,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+
+
 /**
  * ...
  *
@@ -60,7 +62,7 @@ public class AppController implements Observer {
     
 
     public void newGame() {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
+        ChoiceDialog<Integer> dialog = new ChoiceDialog<>( PLAYER_NUMBER_OPTIONS.getFirst(), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
@@ -81,9 +83,9 @@ public class AppController implements Observer {
             //Implemented by Liam. 
             Board board = boardFactory.createBoard(String.valueOf(result.get()));
             gameController = new GameController(board);
-            int no = 2; // Default number of players, can be modified as needed
+            int no = result.get(); // Default number of players, can be modified as needed
             for (int i = 0; i < no; i++) {
-                Player player = new Player(board, "color" + i, "Player " + (i + 1));
+                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                 board.addPlayer(player);
                 player.setSpace(board.getSpace(i % board.width, i));
             }
@@ -105,14 +107,25 @@ public class AppController implements Observer {
 
     public void loadGame() {
         // Implemented by Liam
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("roborally_save.dat"))) {
-            out.writeObject(gameController.board);
-            System.out.println("RoboRally game saved successfully.");
+
+        // Implemented by Liam
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("roborally_save.dat"))) {
+            Board loadedBoard = (Board) in.readObject(); // Deserialize the Board object
+            gameController = new GameController(loadedBoard); // Initialize GameController with the loaded board
+            System.out.println("RoboRally game loaded successfully.");
+
+            // Update UI with the loaded game
+            roboRally.createBoardView(gameController);
+
         } catch (IOException e) {
-            System.err.println("Error saving RoboRally game: " + e.getMessage());
+            System.err.println("Error loading RoboRally game (IO issue): " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error loading RoboRally game (Class issue): " + e.getMessage());
         }
-        // for now, we just create a new game
+
+        // If loading failed and gameController is null, start a new game as a fallback
         if (gameController == null) {
+            System.out.println("Loading failed, starting a new game...");
             newGame();
         }
     }
@@ -152,7 +165,7 @@ public class AppController implements Observer {
             alert.setContentText("Are you sure you want to exit RoboRally?");
             Optional<ButtonType> result = alert.showAndWait();
 
-            if (!result.isPresent() || result.get() != ButtonType.OK) {
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
         }
