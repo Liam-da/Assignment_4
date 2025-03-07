@@ -5,41 +5,27 @@ import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A factory for creating boards. The factory itself is implemented as a singleton.
  *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * @author Ekkart Kindler, modified by [DIT NAVN]
  */
-// XXX A3: might be used for creating a first slightly more interesting board.
 public class BoardFactory {
 
     /**
      * The single instance of this class, which is lazily instantiated on demand.
      */
-    static private BoardFactory instance = null;
+    private static BoardFactory instance = null;
 
     /**
      * Constructor for BoardFactory. It is private in order to make the factory a singleton.
      */
-    private BoardFactory() {
-    }
-
-    //Implemented by Liam.
-    // Method to get available board names
-    public List<String> getAvailableBoardNames() {
-        List<String> availableBoardNames = new ArrayList<>();
-        availableBoardNames.add("Classic");
-        availableBoardNames.add("Advanced");
-        // Add more board names as required
-        return availableBoardNames;
-    }
+    private BoardFactory() {}
 
     /**
-     * Returns the single instance of this factory. The instance is lazily
-     * instantiated when requested for the first time.
+     * Returns the singleton instance of BoardFactory.
      *
      * @return the single instance of the BoardFactory
      */
@@ -50,63 +36,69 @@ public class BoardFactory {
         return instance;
     }
 
+    /**
+     * Returns a list of available board names.
+     *
+     * @return List of available board names.
+     */
+    public List<String> getAvailableBoardNames() {
+        return List.of("Board1", "Board2");
+    }
 
     /**
-     * Creates a new board of given name of a board, which indicates
-     * which type of board should be created. For now the name is ignored.
+     * Creates a new board based on the given name.
      *
-     * @param name the given name board
+     * @param name the given board name
      * @return the new board corresponding to that name
      */
     public Board createBoard(String name) {
         Board board;
+
         if (name == null) {
-            board = new Board(8,8, "<none>");
+            board = new Board(8, 8, "<none>");
+        } else if (name.equals("Board1")) {
+            board = new Board(8, 8, "Board1");
+        } else if (name.equals("Board2")) {
+            board = new Board(8, 8, "Board2");
         } else {
-            board = new Board(8,8, name);
+            board = new Board(8, 8, "<none>");
         }
 
-        // add some walls, actions and checkpoints to some spaces
-        Space space = board.getSpace(0,0);
+        /*
+          Adds walls, actions, and checkpoints to the board spaces.
+          The configuration is different for each board type.
+         */
+        Space space = board.getSpace(0, 0);
         space.getWalls().add(Heading.SOUTH);
-        ConveyorBelt action  = new ConveyorBelt();
-        action.setHeading(Heading.WEST);
-        space.getActions().add(action);
+        // Fjernet ConveyorBelt, hvis den ikke er implementeret endnu
+        // ConveyorBelt action = new ConveyorBelt();
+        // action.setHeading(Heading.WEST);
+        // space.getActions().add(action);
 
-        space = board.getSpace(1,0);
+        space = board.getSpace(1, 0);
         space.getWalls().add(Heading.NORTH);
-        action  = new ConveyorBelt();
-        action.setHeading(Heading.WEST);
-        space.getActions().add(action);
 
-        space = board.getSpace(1,1);
+        space = board.getSpace(1, 1);
         space.getWalls().add(Heading.WEST);
-        action  = new ConveyorBelt();
-        action.setHeading(Heading.NORTH);
-        space.getActions().add(action);
 
-        space = board.getSpace(5,5);
+        space = board.getSpace(5, 5);
         space.getWalls().add(Heading.SOUTH);
-        action  = new ConveyorBelt();
-        action.setHeading(Heading.WEST);
-        space.getActions().add(action);
 
-        space = board.getSpace(6,5);
-        action  = new ConveyorBelt();
-        action.setHeading(Heading.WEST);
-        space.getActions().add(action);
+        space = board.getSpace(6, 5);
+        space.getWalls().add(Heading.WEST);
 
-        // Implemented by Liam.
-        // Adding a checkpoint at a specific location
-        space = board.getSpace(4,4);
-        CheckPoint checkpoint = new CheckPoint(1); // Checkpoint position
-        space.getActions().add(checkpoint); // Add the checkpoint to the space
+        space = board.getSpace(4, 0);
+        CheckPoint checkpoint = new CheckPoint(1);
+        space.getActions().add(checkpoint);
 
-        space = board.getSpace(6,6);
-        CheckPoint checkpoint2 = new CheckPoint(2); // Checkpoint position
-        space.getActions().add(checkpoint2); // Add the checkpoint to the space
+        space = board.getSpace(6, 6);
+        CheckPoint checkpoint2 = new CheckPoint(2);
+        space.getActions().add(checkpoint2);
+
+        space = board.getSpace(2,6);
+        CheckPoint checkpoint3 = new CheckPoint(3);
+        space.getActions().add(checkpoint3);
 
         return board;
     }
-
 }
