@@ -64,9 +64,9 @@ public class BoardFactory {
             board = new Board(8, 8, "<none>");
         }
 
-        /**
-         * Adds walls, actions, and checkpoints to the board spaces.
-         * The configuration is different for each board type.
+        /*
+          Adds walls, actions, and checkpoints to the board spaces.
+          The configuration is different for each board type.
          */
         Space space = board.getSpace(0, 0);
         space.getWalls().add(Heading.SOUTH);
@@ -87,9 +87,6 @@ public class BoardFactory {
         space = board.getSpace(6, 5);
         space.getWalls().add(Heading.WEST);
 
-        /**
-         * Adding checkpoints to specific locations on the board.
-         */
         space = board.getSpace(4, 0);
         CheckPoint checkpoint = new CheckPoint(1);
         space.getActions().add(checkpoint);
