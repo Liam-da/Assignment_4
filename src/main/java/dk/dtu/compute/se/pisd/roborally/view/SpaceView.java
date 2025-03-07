@@ -110,27 +110,46 @@ public class SpaceView extends StackPane implements ViewObserver {
                 }
             }
 
+            // ikke helt rigtig implementation!!!
             space.getWalls();
             for (Heading wall: space.getWalls()){
                 if (wall == Heading.NORTH){
                     Rectangle rectangle = new Rectangle();
-                    rectangle.setX(0);
-                    rectangle.setY(0);
+                    rectangle.setX(2);
+                    rectangle.setY(2);
                     rectangle.setWidth(SPACE_WIDTH);
-                    rectangle.setHeight(1);
+                    rectangle.setHeight(2);
                     rectangle.setFill(Color.RED);
                     this.getChildren().add(rectangle);
 
                 }
 
                 if (wall == Heading.EAST){
-
+                    Rectangle rectangle = new Rectangle();
+                    rectangle.setX(SPACE_WIDTH - 1);
+                    rectangle.setY(0);
+                    rectangle.setWidth(1);
+                    rectangle.setHeight(SPACE_HEIGHT);
+                    rectangle.setFill(Color.RED);
+                    this.getChildren().add(rectangle);
                 }
                 if (wall == Heading.SOUTH){
-
+                    Rectangle rectangle = new Rectangle();
+                    rectangle.setX(10);
+                    rectangle.setY(10);
+                    rectangle.setWidth(5);
+                    rectangle.setHeight(2);
+                    rectangle.setFill(Color.RED);
+                    this.getChildren().add(rectangle);
                 }
                 if (wall == Heading.WEST){
-
+                    Rectangle rectangle = new Rectangle();
+                    rectangle.setX(0);
+                    rectangle.setY(0);
+                    rectangle.setWidth(1);
+                    rectangle.setHeight(SPACE_HEIGHT);
+                    rectangle.setFill(Color.RED);
+                    this.getChildren().add(rectangle);
                 }
             }
 

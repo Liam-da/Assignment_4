@@ -108,6 +108,7 @@ public class AppController implements Observer {
     public void loadGame() {
         // Implemented by Liam
 
+
         // Implemented by Liam
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("roborally_save.dat"))) {
             Board loadedBoard = (Board) in.readObject(); // Deserialize the Board object
