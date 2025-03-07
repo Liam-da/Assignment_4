@@ -90,13 +90,17 @@ public class BoardFactory {
         /**
          * Adding checkpoints to specific locations on the board.
          */
-        space = board.getSpace(4, 4);
+        space = board.getSpace(4, 0);
         CheckPoint checkpoint = new CheckPoint(1);
         space.getActions().add(checkpoint);
 
         space = board.getSpace(6, 6);
         CheckPoint checkpoint2 = new CheckPoint(2);
         space.getActions().add(checkpoint2);
+
+        space = board.getSpace(2,6);
+        CheckPoint checkpoint3 = new CheckPoint(3);
+        space.getActions().add(checkpoint3);
 
         return board;
     }
