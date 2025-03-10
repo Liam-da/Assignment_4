@@ -31,10 +31,11 @@ public class BoardFactory {
     // Method to get available board names
     public List<String> getAvailableBoardNames() {
         List<String> availableBoardNames = new ArrayList<>();
-        availableBoardNames.add("Classic");
-        availableBoardNames.add("Advanced");
+        availableBoardNames.add("Board1"); //
+        availableBoardNames.add("Board2");
         // Add more board names as required
         return availableBoardNames;
+
     }
 
     /**

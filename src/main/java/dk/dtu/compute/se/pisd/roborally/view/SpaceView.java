@@ -27,13 +27,18 @@ import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 
 /**
@@ -110,51 +115,45 @@ public class SpaceView extends StackPane implements ViewObserver {
                 }
             }
 
-            // ikke helt rigtig implementation!!!
-            space.getWalls();
-            for (Heading wall: space.getWalls()){
-                if (wall == Heading.NORTH){
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setX(2);
-                    rectangle.setY(2);
-                    rectangle.setWidth(SPACE_WIDTH);
-                    rectangle.setHeight(2);
-                    rectangle.setFill(Color.RED);
-                    this.getChildren().add(rectangle);
+            Canvas canvas = new Canvas(SPACE_WIDTH, SPACE_HEIGHT);
 
-                }
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(5);
+            gc.setLineCap(StrokeLineCap.ROUND);
 
-                if (wall == Heading.EAST){
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setX(SPACE_WIDTH - 1);
-                    rectangle.setY(0);
-                    rectangle.setWidth(1);
-                    rectangle.setHeight(SPACE_HEIGHT);
-                    rectangle.setFill(Color.RED);
-                    this.getChildren().add(rectangle);
-                }
-                if (wall == Heading.SOUTH){
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setX(10);
-                    rectangle.setY(10);
-                    rectangle.setWidth(5);
-                    rectangle.setHeight(2);
-                    rectangle.setFill(Color.RED);
-                    this.getChildren().add(rectangle);
-                }
-                if (wall == Heading.WEST){
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.setX(0);
-                    rectangle.setY(0);
-                    rectangle.setWidth(1);
-                    rectangle.setHeight(SPACE_HEIGHT);
-                    rectangle.setFill(Color.RED);
-                    this.getChildren().add(rectangle);
+            List<Heading> maWalls = space.getWalls();
+            Player player = space.getPlayer();
+
+            if(player != null) {
+                Heading playerHeading = player.getHeading();
+
+                if (maWalls.contains(playerHeading)) {
+                    switch(playerHeading) {
+                        case NORTH:
+                            gc.strokeLine(2, 2, SPACE_WIDTH - 2, 2); //top wall
+                            break;
+
+                        case SOUTH:
+                            gc.strokeLine(2, SPACE_HEIGHT - 2, SPACE_WIDTH - 2, SPACE_HEIGHT - 2); // bottom wall
+                            break;
+
+                        case EAST:
+                            gc.strokeLine(SPACE_WIDTH - 2, 2, SPACE_WIDTH - 2, SPACE_HEIGHT - 2); // right wall
+                            break;
+
+                        case WEST:
+                            gc.strokeLine(2, 2, 2, SPACE_HEIGHT - 2); // left wall
+                            break;
+                    }
                 }
             }
+            this.getChildren().add(canvas);
+            }
 
-            updatePlayer();
-        }
+            updatePlayer(); // calling the player after drawing the wall.
     }
-
 }
+
+
+
