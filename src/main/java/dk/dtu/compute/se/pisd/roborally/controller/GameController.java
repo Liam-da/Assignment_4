@@ -196,6 +196,12 @@ public class GameController {
                 case FAST_FORWARD:
                     this.fastForward(player);
                     break;
+                case U_TURN:
+                    this.uTurn(player);
+                    break;
+                case BACKWARD:
+                    this.backward(player);
+                    break;
                 default:
                     // DO NOTHING (for now)
             }
@@ -260,6 +266,43 @@ public class GameController {
         // Update the player's direction
         player.setHeading(newDirection);
     }
+
+
+    // Implemented by Hannah
+    public void uTurn(@NotNull Player player){
+        // Get the current direction of the player
+        Heading currentDirection = player.getHeading();
+
+        // Calculate the new direction (180 degrees counterclockwise)
+        Heading newDirection = Heading.values()[(currentDirection.ordinal() + Heading.values().length - 2) % Heading.values().length];
+
+        // Update the player's direction
+        player.setHeading(newDirection);
+    }
+
+    // Implemented by Hannah
+    public void backward(@NotNull Player player) {
+        // Get the current space of the player
+        Space currentSpace = player.getSpace();
+        if (currentSpace != null) {
+            // Get the opposite heading of the player
+            Heading oppositeHeading = player.getHeading().opposite();
+
+            // Get the new space by moving in the opposite direction
+            Space newSpace = board.getNeighbour(currentSpace, oppositeHeading);
+
+            // Check if the new space is free
+            if (newSpace != null && newSpace.getPlayer() == null) {
+                // Move the player
+                currentSpace.setPlayer(null);
+                newSpace.setPlayer(player);
+                player.setSpace(newSpace);
+                board.incrementMoveCount();
+            }
+        }
+    }
+
+
 
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();

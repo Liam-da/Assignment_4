@@ -34,7 +34,12 @@ import org.jetbrains.annotations.NotNull;
  *
  */
 // XXX A3
-public class ConveyorBelt extends FieldAction {
+public class
+
+
+
+
+ConveyorBelt extends FieldAction {
 
     private Heading heading;
 
