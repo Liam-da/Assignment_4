@@ -35,8 +35,10 @@ public enum Command {
     RIGHT("Turn Right"),
     LEFT("Turn Left"),
     FAST_FORWARD("Fast Fwd"),
+    //Implemented by Hannah
     U_TURN("U Turn"),
-    BACKWARD("Backward");
+    BACKWARD("Backward"),
+    LEFT_OR_RIGHT("Left or Right");
 
     final public String displayName;
 

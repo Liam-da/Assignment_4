@@ -150,7 +150,12 @@ public class GameController {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
-                if (card != null) {
+                if (card != null ) {
+                    // if is not LEFTORRIGHT:
+                    //    continue
+                    //    else
+                    //.   Put phase to Interavtive
+                    //    return after
                     Command command = card.command;
                     executeCommand(currentPlayer, command);
                     List<FieldAction> Actions = currentPlayer.getSpace().getActions();
@@ -207,6 +212,9 @@ public class GameController {
                     break;
                 case BACKWARD:
                     this.backward(player);
+                    break;
+                case LEFT_OR_RIGHT:
+                    this.leftOrRight(player);
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -348,6 +356,11 @@ public class GameController {
                 board.incrementMoveCount();
             }
         }
+    }
+
+    // Implemented by Hannah
+    public void leftOrRight(@NotNull Player player){
+
     }
 
 
