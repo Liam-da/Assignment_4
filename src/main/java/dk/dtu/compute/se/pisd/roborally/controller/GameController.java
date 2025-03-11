@@ -24,6 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * ...
  *
@@ -132,7 +134,6 @@ public class GameController {
     // XXX V2
     public void executeStep() {
         board.setStepMode(true);
-        continuePrograms();
     }
 
     // XXX V2
@@ -152,6 +153,11 @@ public class GameController {
                 if (card != null) {
                     Command command = card.command;
                     executeCommand(currentPlayer, command);
+                    List<FieldAction> Actions = currentPlayer.getSpace().getActions();
+                     for(FieldAction action : Actions) {
+                         action.doAction(this,currentPlayer.getSpace());
+                     }
+
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -229,6 +235,8 @@ public class GameController {
                     player.setSpace(newSpace);
                     // Increment the move count on the board
                     board.incrementMoveCount();
+
+
                 }
             }
         }
