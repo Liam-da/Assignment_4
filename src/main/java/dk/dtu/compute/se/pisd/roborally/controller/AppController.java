@@ -57,43 +57,62 @@ public class AppController implements Observer {
     private BoardFactory boardFactory = BoardFactory.getInstance(); // Singleton instance
 
     public AppController(@NotNull RoboRally roboRally) {
+
         this.roboRally = roboRally;
     }
-    
+
+    private String showBoardSelectionDialog() {
+        List<String> boardOptions = BoardFactory.getInstance().getAvailableBoardNames();
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(boardOptions.get(0), boardOptions);
+        dialog.setTitle("Board Selection");
+        dialog.setHeaderText("Select a board");
+        dialog.setContentText("Choose a board:");
+
+        Optional<String> result = dialog.showAndWait();
+        return result.orElse(boardOptions.get(0));
+    }
+
 
     public void newGame() {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>( PLAYER_NUMBER_OPTIONS.getFirst(), PLAYER_NUMBER_OPTIONS);
+        String selectedBoard = showBoardSelectionDialog();
+        Board board = boardFactory.createBoard(selectedBoard);
+
+        if (gameController != null) {
+            if (!stopGame()) {
+                System.err.println("Kunne ikke stoppe det gamle spil, men fortsætter alligevel.");
+            }
+        }
+
+
+        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.getFirst(), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
 
-        //If a game is already running, it tries to stop it first (stopGame()).
         if (result.isPresent()) {
-            if (gameController != null) {
-                // The UI should not allow this, but in case this happens anyway.
-                // give the user the option to save the game or abort this operation!
-                if (!stopGame()) {
-                    return;
-                }
+            int numberOfPlayers = result.get();
+
+            gameController = new GameController(board);
+
+
+            for (int i = 0; i < numberOfPlayers; i++) {
+                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+                player.setName("Player " + (i + 1));
+                board.addPlayer(player);
             }
 
-            // XXX the board should eventually be created programmatically or loaded from a file
-            //     here we just create an empty board with the required number of players.
-
-            //Implemented by Liam. 
-            Board board = boardFactory.createBoard(String.valueOf(result.get()));
-            gameController = new GameController(board);
-            int no = result.get(); // Default number of players, can be modified as needed
-            for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
-                board.addPlayer(player);
-                player.setSpace(board.getSpace(i % board.width, i));
+            if (board.getPlayersNumber() > 0) {
+                board.setCurrentPlayer(board.getPlayer(0));
             }
 
             gameController.startProgrammingPhase();
-            roboRally.createBoardView(gameController);
+
+
+            Platform.runLater(() -> roboRally.createBoardView(gameController));
         }
     }
+
 
     public void saveGame() {
         // Implemented by Liam

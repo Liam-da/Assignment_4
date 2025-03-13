@@ -65,15 +65,16 @@ public class Board extends Subject {
         this.width = width;
         this.height = height;
         spaces = new Space[width][height];
+
+        System.out.println("New Board created: " + this);  // Debug print
+
         for (int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
-                Space space = new Space(this, x, y);
-                spaces[x][y] = space;
+            for (int y = 0; y < height; y++) {
+                spaces[x][y] = new Space(this, x, y);
             }
         }
-        this.stepMode = false;
-
     }
+
 
     public Board(int width, int height) {
         this(width, height, "defaultboard");
@@ -225,10 +226,19 @@ public class Board extends Subject {
     }
     public void incrementMoveCount() {
         moveCount++;
+        System.out.println("Move Count updated: " + moveCount + " on " + this);
+        notifyChange();
+
     }
 
     public int getMoveCount() {
+        System.out.println("getMoveCount() called, value: " + moveCount);  // ✅ Debug print
         return moveCount;
+    }
+    public void updateBoard(){
+        System.out.println("🔄 Board UI opdateres!");
+
+        notifyChange();
     }
 
 }

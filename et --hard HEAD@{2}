@@ -1,0 +1,14 @@
+[33m990ff15[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: merge origin/master: Fast-forward
+[33m6d74523[m HEAD@{1}: merge origin/master: Fast-forward
+[33m17faebc[m HEAD@{2}: merge origin/master: Fast-forward
+[33m8b8967e[m HEAD@{3}: commit: jeg har oprette BoardFactory.java
+[33mb430041[m HEAD@{4}: reset: moving to b430041a8ca44bdd7a73a0152744663507679d96
+[33mb430041[m HEAD@{5}: reset: moving to b430041a8ca44bdd7a73a0152744663507679d96
+[33mb430041[m HEAD@{6}: merge origin/master: Fast-forward
+[33m1e51aad[m HEAD@{7}: reset: moving to 1e51aad99e065f986873d019c42dad90c1501660
+[33m1e51aad[m HEAD@{8}: pull --no-stat -v --progress origin master: Fast-forward
+[33md204101[m HEAD@{9}: merge origin/master: Fast-forward
+[33m642964b[m HEAD@{10}: merge origin/master: Fast-forward
+[33mc57f4c7[m HEAD@{11}: commit: jeg har ændret i GameController.java vi har oprettet opgave V1
+[33m2601bfc[m HEAD@{12}: merge origin/master: Fast-forward
+[33me80edbc[m HEAD@{13}: clone: from https://github.com/Liam-da/Assignment_4.git

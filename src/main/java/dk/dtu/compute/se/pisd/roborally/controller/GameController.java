@@ -23,6 +23,8 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
+import dk.dtu.compute.se.pisd.roborally.model.Command;
+
 
 /**
  * ...
@@ -36,7 +38,11 @@ public class GameController {
 
     public GameController(@NotNull Board board) {
         this.board = board;
+        System.out.println("GameController initialized with Board: " + board);
+
+
     }
+
 
     /**
      * This is just some dummy controller operation to make a simple move to see something
@@ -45,20 +51,17 @@ public class GameController {
      * @param space the space to which the current player should move
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
-
-        // the method implemented
         Player currentPlayer = board.getCurrentPlayer(); // Get the current player
-
         if (space.getPlayer() == null) { // Check if the player exists and the space is free
+            if (currentPlayer.getSpace() != null) {
+                currentPlayer.getSpace().setPlayer(null);
+            }
 
-          if(currentPlayer.getSpace() != null){
-              currentPlayer.getSpace().setPlayer(null);
-          }
+            currentPlayer.setSpace(space);
+            space.setPlayer(currentPlayer); // Set the player in the new space
 
-          space.setPlayer(currentPlayer); // Set the player in the new space
-
-          int nextPlayerIndex = (board.getPlayerNumber(currentPlayer) + 1) % board.getPlayersNumber();
-          board.setCurrentPlayer(board.getPlayer(nextPlayerIndex));
+            int nextPlayerIndex = (board.getPlayerNumber(currentPlayer) + 1) % board.getPlayersNumber();
+            board.setCurrentPlayer(board.getPlayer(nextPlayerIndex));
         }
     }
 
@@ -208,68 +211,51 @@ public class GameController {
         }
     }
 
+
     // Implemented by Liam
-    public void moveForward(@NotNull Player player) {
+    public boolean moveForward(@NotNull Player player) {
         // Get the current space of the player
         Space currentSpace = player.getSpace();
         if (currentSpace != null) {
-            // Calculate the new coordinates for the player (moving up one space)
-            int newX = currentSpace.x;
-            int newY = currentSpace.y - 1; // Move up one space
-            if (newY >= 0) {
-                // Get the new space on the board
-                Space newSpace = board.getSpace(newX, newY);
-                // Check if the new space is free
-                if (newSpace.getPlayer() == null) {
-                    // Remove the player from the current space
-                    currentSpace.setPlayer(null);
-                    // Place the player in the new space
-                    newSpace.setPlayer(player);
-                    // Update the player's space reference
-                    player.setSpace(newSpace);
-                    // Increment the move count on the board
-                    board.incrementMoveCount();
-                }
+            Heading heading = player.getHeading();
+            Space nextSpace = board.getNeighbour(currentSpace, heading);
+            if (nextSpace != null && nextSpace.getPlayer() == null &&
+                    !currentSpace.hasWall(heading) && !nextSpace.hasWall(heading.opposite())) {
+                currentSpace.setPlayer(null);
+                nextSpace.setPlayer(player);
+                player.setSpace(nextSpace);
+
+                board.incrementMoveCount();
+
+                System.out.println("Move count: " + board.getMoveCount());
+                return true;
             }
+        }
+        return false;
+    }
+
+    private void rotate(@NotNull Player player, int steps) {
+        Heading currentDirection = player.getHeading();
+        Heading newDirection = Heading.values()[(currentDirection.ordinal() + steps + Heading.values().length) % Heading.values().length];
+        player.setHeading(newDirection);
+    }
+
+    public void turnRight(@NotNull Player player) {
+        rotate(player, 1);
+    }
+
+    public void turnLeft(@NotNull Player player) {
+        rotate(player, -1);
+    }
+
+    public void fastForward(@NotNull Player player) {
+        if (moveForward(player)) {
+            moveForward(player);
         }
     }
 
-    // Implemented by Liam
-    public void fastForward(@NotNull Player player) {
-        // Move the player forward once
-        moveForward(player);
-        // Move the player forward again
-        moveForward(player);
-    }
-
-    // Implemented by Liam
-    public void turnRight(@NotNull Player player) {
-        // Get the current direction of the player
-        Heading currentDirection = player.getHeading();
-
-        // Calculate the new direction (90 degrees clockwise)
-        Heading newDirection = Heading.values()[(currentDirection.ordinal() + 1) % Heading.values().length];
-
-        // Update the player's direction
-        player.setHeading(newDirection);
-
-    }
-
-    // Implemented by Liam
-    public void turnLeft(@NotNull Player player) {
-        // Get the current direction of the player
-        Heading currentDirection = player.getHeading();
-
-        // Calculate the new direction (90 degrees counterclockwise)
-        Heading newDirection = Heading.values()[(currentDirection.ordinal() + Heading.values().length - 1) % Heading.values().length];
-
-        // Update the player's direction
-        player.setHeading(newDirection);
-    }
-
-
     // Implemented by Hannah
-    public void uTurn(@NotNull Player player){
+    public void uTurn(@NotNull Player player) {
         // Get the current direction of the player
         Heading currentDirection = player.getHeading();
 
@@ -282,27 +268,19 @@ public class GameController {
 
     // Implemented by Hannah
     public void backward(@NotNull Player player) {
-        // Get the current space of the player
+        if (player == null || player.getSpace() == null) return; // Sikrer mod fejl
+
         Space currentSpace = player.getSpace();
-        if (currentSpace != null) {
-            // Get the opposite heading of the player
-            Heading oppositeHeading = player.getHeading().opposite();
+        Heading oppositeHeading = player.getHeading().opposite();
+        Space newSpace = board.getNeighbour(currentSpace, oppositeHeading);
 
-            // Get the new space by moving in the opposite direction
-            Space newSpace = board.getNeighbour(currentSpace, oppositeHeading);
-
-            // Check if the new space is free
-            if (newSpace != null && newSpace.getPlayer() == null) {
-                // Move the player
-                currentSpace.setPlayer(null);
-                newSpace.setPlayer(player);
-                player.setSpace(newSpace);
-                board.incrementMoveCount();
-            }
+        if (newSpace != null && newSpace.getPlayer() == null) {
+            currentSpace.setPlayer(null);
+            newSpace.setPlayer(player);
+            player.setSpace(newSpace);
+            board.incrementMoveCount();
         }
     }
-
-
 
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
@@ -324,6 +302,6 @@ public class GameController {
         // XXX just for now to indicate that the actual method is not yet implemented
         assert false;
     }
-
-
 }
+
+
