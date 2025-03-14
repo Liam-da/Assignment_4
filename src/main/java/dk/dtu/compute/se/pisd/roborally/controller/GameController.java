@@ -42,6 +42,21 @@ public class GameController {
 
     }
 
+    private void advanceToNextStep(Player currentPlayer, int step) {
+        int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
+        if (nextPlayerNumber < board.getPlayersNumber()) {
+            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+        } else {
+            step++;
+            if (step < Player.NO_REGISTERS) {
+                makeProgramFieldsVisible(step);
+                board.setStep(step);
+                board.setCurrentPlayer(board.getPlayer(0));
+            } else {
+                startProgrammingPhase();
+            }
+        }
+    }
 
     /**
      * This is just some dummy controller operation to make a simple move to see something
@@ -146,6 +161,13 @@ public class GameController {
 
     // XXX V2
     private void executeNextStep() {
+        //System.out.println("Executing next step. Current Phase: " + board.getPhase());
+        if (board.getPhase() == Phase.PLAYER_INTERACTION) {
+            System.out.println("Player interaction complete. Resuming activation phase.");
+            board.setPhase(Phase.ACTIVATION);
+            executeNextStep(); // Resume activation phase
+            return;
+        }
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -153,6 +175,10 @@ public class GameController {
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
+                    if (command == Command.LEFT_OR_RIGHT) {
+                        board.setPhase(Phase.PLAYER_INTERACTION);
+                        return; // Wait for player input
+                    }
                     executeCommand(currentPlayer, command);
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
@@ -176,6 +202,20 @@ public class GameController {
             // this should not happen
             assert false;
         }
+    }
+
+    // XXX V2
+    public void playerTurnChoice(int direction) {
+        Player currentPlayer = board.getCurrentPlayer();
+        if (direction == -1) {
+            turnLeft(currentPlayer);
+        } else {
+            turnRight(currentPlayer);
+        }
+        board.setPhase(Phase.ACTIVATION);
+        //executeNextStep();
+        //continuePrograms();
+        advanceToNextStep(currentPlayer, board.getStep());
     }
 
     // XXX V2
@@ -218,8 +258,7 @@ public class GameController {
         if (currentSpace != null) {
             Heading heading = player.getHeading();
             Space nextSpace = board.getNeighbour(currentSpace, heading);
-            if (nextSpace != null && nextSpace.getPlayer() == null &&
-                    !currentSpace.hasWall(heading) && !nextSpace.hasWall(heading.opposite())) {
+            if (nextSpace != null && nextSpace.getPlayer() == null && !currentSpace.hasWall(heading) && !nextSpace.hasWall(heading.opposite())) {
                 currentSpace.setPlayer(null);
                 nextSpace.setPlayer(player);
                 player.setSpace(nextSpace);

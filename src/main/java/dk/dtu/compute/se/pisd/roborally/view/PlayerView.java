@@ -23,6 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
@@ -38,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public class PlayerView extends Tab implements ViewObserver {
 
@@ -96,13 +96,13 @@ public class PlayerView extends Tab implements ViewObserver {
         //          in the game controller
 
         finishButton = new Button("Finish Programming");
-        finishButton.setOnAction( e -> gameController.finishProgrammingPhase());
+        finishButton.setOnAction(e -> gameController.finishProgrammingPhase());
 
         executeButton = new Button("Execute Program");
-        executeButton.setOnAction( e-> gameController.executePrograms());
+        executeButton.setOnAction(e -> gameController.executePrograms());
 
         stepButton = new Button("Execute Current Register");
-        stepButton.setOnAction( e-> gameController.executeStep());
+        stepButton.setOnAction(e -> gameController.executeStep());
 
         buttonPanel = new VBox(finishButton, executeButton, stepButton);
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
@@ -146,7 +146,7 @@ public class PlayerView extends Tab implements ViewObserver {
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CardFieldView cardFieldView = programCardViews[i];
                 if (cardFieldView != null) {
-                    if (player.board.getPhase() == Phase.PROGRAMMING ) {
+                    if (player.board.getPhase() == Phase.PROGRAMMING) {
                         cardFieldView.setBorder(CardFieldView.BORDER_DEFAULT);
                     } else {
                         if (i < player.board.getStep()) {
@@ -209,22 +209,20 @@ public class PlayerView extends Tab implements ViewObserver {
                     //      an interactive command card, and the buttons should represent
                     //      the player's choices of the interactive command card. The
                     //      following is just a mockup showing two options
-                    Button optionButton = new Button("turn right");
-                    optionButton.setOnAction( e -> gameController.turnRight(player));
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
+                    CommandCardField cardField = player.getProgramField(player.board.getStep());
+                    if (cardField != null && cardField.getCard().command == Command.LEFT_OR_RIGHT) {
+                        Button turnLeftButton = new Button("Turn Left");
+                        turnLeftButton.setOnAction(e -> gameController.playerTurnChoice(-1));
+                        turnLeftButton.setDisable(false);
+                        playerInteractionPanel.getChildren().add(turnLeftButton);
 
-                    optionButton = new Button("Turn Left");
-                    optionButton.setOnAction( e -> gameController.turnLeft(player));
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
-
-                    buttonPanel = new VBox();
-                    buttonPanel.setAlignment(Pos.CENTER_LEFT);
-                    buttonPanel.setSpacing(3.0);
+                        Button turnRightButton = new Button("Turn Right");
+                        turnRightButton.setOnAction(e -> gameController.playerTurnChoice(1));
+                        turnRightButton.setDisable(false);
+                        playerInteractionPanel.getChildren().add(turnRightButton);
+                    }
                 }
             }
         }
     }
-
 }
