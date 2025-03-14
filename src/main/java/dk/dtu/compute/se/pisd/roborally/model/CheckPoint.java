@@ -3,6 +3,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 
+
 // Implemented by Liam.
 // creating a Checkpoint class.
 public class CheckPoint extends FieldAction {
@@ -23,6 +24,7 @@ public class CheckPoint extends FieldAction {
     }
 
     @Override
+
     public boolean doAction(GameController gameController, Space space) {
         Player player = gameController.board.getCurrentPlayer();
         if(player.getCheckPointCounter() == x){
