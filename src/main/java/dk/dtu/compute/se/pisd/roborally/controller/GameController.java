@@ -25,6 +25,8 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Command;
 
+import java.util.List;
+
 
 /**
  * ...
@@ -185,6 +187,14 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    for(int i = 0; i < board.getPlayersNumber(); i++) {
+                       Player player = board.getPlayer(i);
+                       List<FieldAction> actions = player.getSpace().getActions();
+                       for(int j = 0; j < actions.size(); j++) {
+                           actions.get(j).doAction(this, player.getSpace());
+                       }
+                    }
+
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);

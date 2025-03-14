@@ -4,6 +4,7 @@ import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 
 
+
 // Implemented by Liam.
 // creating a Checkpoint class.
 public class CheckPoint extends FieldAction {
@@ -28,10 +29,11 @@ public class CheckPoint extends FieldAction {
     public boolean doAction(GameController gameController, Space space) {
         Player player = gameController.board.getCurrentPlayer();
         if(player.getCheckPointCounter() == x){
-            System.out.println(x);
+            System.out.println(player + "has reached checkpoint " + x);
             player.setCheckPointCounter(player.getCheckPointCounter() + 1);
             if(player.getCheckPointCounter() == 4){
                 System.out.println(player + " has won the game");
+
                 return true;
             }
         }
