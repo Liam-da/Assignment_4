@@ -86,7 +86,16 @@ public class Space extends Subject {
      */
     // XXX A3
     public List<Heading> getWalls() {
+
         return walls;
+    }
+    public void addWall(Heading heading) {
+        System.out.println("AddWall"+heading);
+        this.walls.add(heading);
+    }
+    public boolean hasWall(Heading heading) {
+
+        return walls.contains(heading);
     }
 
     /**

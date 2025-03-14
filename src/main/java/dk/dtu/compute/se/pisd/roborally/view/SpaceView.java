@@ -27,18 +27,13 @@ import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 
 /**
@@ -115,45 +110,44 @@ public class SpaceView extends StackPane implements ViewObserver {
                 }
             }
 
-            Canvas canvas = new Canvas(SPACE_WIDTH, SPACE_HEIGHT);
 
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.setStroke(Color.RED);
-            gc.setLineWidth(5);
-            gc.setLineCap(StrokeLineCap.ROUND);
+            for (Heading wall : space.getWalls()) {
+                Rectangle rectangle = new Rectangle();
+                rectangle.setFill(Color.RED);
 
-            List<Heading> maWalls = space.getWalls();
-            Player player = space.getPlayer();
+                int WALL_THICKNESS = 4;
 
-            if(player != null) {
-                Heading playerHeading = player.getHeading();
-
-                if (maWalls.contains(playerHeading)) {
-                    switch(playerHeading) {
-                        case NORTH:
-                            gc.strokeLine(2, 2, SPACE_WIDTH - 2, 2); //top wall
-                            break;
-
-                        case SOUTH:
-                            gc.strokeLine(2, SPACE_HEIGHT - 2, SPACE_WIDTH - 2, SPACE_HEIGHT - 2); // bottom wall
-                            break;
-
-                        case EAST:
-                            gc.strokeLine(SPACE_WIDTH - 2, 2, SPACE_WIDTH - 2, SPACE_HEIGHT - 2); // right wall
-                            break;
-
-                        case WEST:
-                            gc.strokeLine(2, 2, 2, SPACE_HEIGHT - 2); // left wall
-                            break;
-                    }
+                if (wall == Heading.NORTH) {
+                    rectangle.setWidth(SPACE_WIDTH);
+                    rectangle.setHeight(WALL_THICKNESS);
+                    rectangle.setTranslateX(0);
+                    rectangle.setTranslateY(-SPACE_HEIGHT / 2 + WALL_THICKNESS / 2);
                 }
-            }
-            this.getChildren().add(canvas);
+
+                if (wall == Heading.EAST) {
+                    rectangle.setWidth(WALL_THICKNESS);
+                    rectangle.setHeight(SPACE_HEIGHT);
+                    rectangle.setTranslateX(SPACE_WIDTH / 2 - WALL_THICKNESS / 2);
+                    rectangle.setTranslateY(0);
+                }
+                if (wall == Heading.SOUTH) {
+                    rectangle.setWidth(SPACE_WIDTH);
+                    rectangle.setHeight(WALL_THICKNESS);
+                    rectangle.setTranslateX(0);
+                    rectangle.setTranslateY(SPACE_HEIGHT / 2 - WALL_THICKNESS / 2);
+                }
+                if (wall == Heading.WEST) {
+                    rectangle.setWidth(WALL_THICKNESS);
+                    rectangle.setHeight(SPACE_HEIGHT);
+                    rectangle.setTranslateX(-SPACE_WIDTH / 2 + WALL_THICKNESS / 2);
+                    rectangle.setTranslateY(0);
+                }
+                this.getChildren().add( rectangle );
+
             }
 
-            updatePlayer(); // calling the player after drawing the wall.
+            updatePlayer();
+        }
     }
+
 }
-
-
-

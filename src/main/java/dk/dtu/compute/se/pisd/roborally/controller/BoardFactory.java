@@ -22,7 +22,8 @@ public class BoardFactory {
     /**
      * Constructor for BoardFactory. It is private in order to make the factory a singleton.
      */
-    private BoardFactory() {}
+    private BoardFactory() {
+    }
 
     /**
      * Returns the singleton instance of BoardFactory.
@@ -42,6 +43,7 @@ public class BoardFactory {
      * @return List of available board names.
      */
     public List<String> getAvailableBoardNames() {
+
         return List.of("Board1", "Board2");
     }
 
@@ -54,51 +56,53 @@ public class BoardFactory {
     public Board createBoard(String name) {
         Board board;
 
-        if (name == null) {
-            board = new Board(8, 8, "<none>");
-        } else if (name.equals("Board1")) {
+        if ("Board1".equals(name)) {
             board = new Board(8, 8, "Board1");
-        } else if (name.equals("Board2")) {
+            setupBoard1(board);
+        } else if ("Board2".equals(name)) {
             board = new Board(8, 8, "Board2");
+            setupBoard2(board);
         } else {
             board = new Board(8, 8, "<none>");
+            setupBoard1(board);
         }
-
-        /*
-          Adds walls, actions, and checkpoints to the board spaces.
-          The configuration is different for each board type.
-         */
-        Space space = board.getSpace(0, 0);
-        space.getWalls().add(Heading.SOUTH);
-        // Fjernet ConveyorBelt, hvis den ikke er implementeret endnu
-        // ConveyorBelt action = new ConveyorBelt();
-        // action.setHeading(Heading.WEST);
-        // space.getActions().add(action);
-
-        space = board.getSpace(1, 0);
-        space.getWalls().add(Heading.NORTH);
-
-        space = board.getSpace(1, 1);
-        space.getWalls().add(Heading.WEST);
-
-        space = board.getSpace(5, 5);
-        space.getWalls().add(Heading.SOUTH);
-
-        space = board.getSpace(6, 5);
-        space.getWalls().add(Heading.WEST);
-
-        space = board.getSpace(4, 0);
-        CheckPoint checkpoint = new CheckPoint(1);
-        space.getActions().add(checkpoint);
-
-        space = board.getSpace(6, 6);
-        CheckPoint checkpoint2 = new CheckPoint(2);
-        space.getActions().add(checkpoint2);
-
-        space = board.getSpace(2,6);
-        CheckPoint checkpoint3 = new CheckPoint(3);
-        space.getActions().add(checkpoint3);
-
+        board.updateBoard();
         return board;
+    }
+
+    private void setupBoard1(Board board) {
+        addWall(board, 0, 0, Heading.SOUTH);
+        addWall(board, 1, 0, Heading.NORTH);
+        addWall(board, 1, 1, Heading.WEST);
+
+        addCheckpoint(board, 4, 0, 1);
+        addCheckpoint(board, 6, 6, 2);
+        addCheckpoint(board, 2, 6, 3);
+    }
+
+    private void setupBoard2(Board board) {
+        addWall(board, 2, 2, Heading.EAST);
+        addWall(board, 3, 3, Heading.WEST);
+        addWall(board, 5, 5, Heading.SOUTH);
+        addWall(board, 6, 6, Heading.NORTH);
+
+
+        addCheckpoint(board, 1, 1, 1);
+        addCheckpoint(board, 5, 4, 2);
+        addCheckpoint(board, 7, 3, 3);
+    }
+
+    private void addWall(Board board, int x, int y, Heading heading) {
+        Space space = board.getSpace(x, y);
+        if (space != null) {
+            space.addWall(heading);
+        }
+    }
+
+    private void addCheckpoint(Board board, int x, int y, int checkpointNumber) {
+        Space space = board.getSpace(x, y);
+        if (space != null) {
+            space.getActions().add(new CheckPoint(checkpointNumber));
+        }
     }
 }

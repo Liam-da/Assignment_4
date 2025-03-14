@@ -87,10 +87,12 @@ public class BoardView extends VBox implements ViewObserver {
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {
-            Phase phase = board.getPhase();
+            System.out.println("BoardView updated! Move Count: " + board.getMoveCount());
             statusLabel.setText(board.getStatusMessage());
         }
     }
+
+
 
     // XXX this handler and its uses should eventually be deleted! This is just to help test the
     //     behaviour of the game by being able to explicitly move the players on the board!
@@ -112,6 +114,7 @@ public class BoardView extends VBox implements ViewObserver {
 
                 if (board == gameController.board) {
                     gameController.moveCurrentPlayerToSpace(space);
+                    board.incrementMoveCount(); // hvergang en spiller bevæger sige.
                     event.consume();
                 }
             }
