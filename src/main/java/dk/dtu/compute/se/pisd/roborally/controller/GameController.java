@@ -30,7 +30,6 @@ import dk.dtu.compute.se.pisd.roborally.model.Command;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public class GameController {
 
@@ -303,5 +302,3 @@ public class GameController {
         assert false;
     }
 }
-
-
