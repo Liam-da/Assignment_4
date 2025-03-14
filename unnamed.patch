@@ -1,0 +1,31 @@
+Index: src/main/java/dk/dtu/compute/se/pisd/roborally/controller/BoardFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/dk/dtu/compute/se/pisd/roborally/controller/BoardFactory.java b/src/main/java/dk/dtu/compute/se/pisd/roborally/controller/BoardFactory.java
+--- a/src/main/java/dk/dtu/compute/se/pisd/roborally/controller/BoardFactory.java	(revision d2041014c160a0f35b147ee101e4b607ea416bbd)
++++ b/src/main/java/dk/dtu/compute/se/pisd/roborally/controller/BoardFactory.java	(revision 1e51aad99e065f986873d019c42dad90c1501660)
+@@ -1,6 +1,7 @@
+ package dk.dtu.compute.se.pisd.roborally.controller;
+ 
+ import dk.dtu.compute.se.pisd.roborally.model.Board;
++import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
+ import dk.dtu.compute.se.pisd.roborally.model.Heading;
+ import dk.dtu.compute.se.pisd.roborally.model.Space;
+ 
+@@ -98,9 +99,13 @@
+         // Implemented by Liam.
+         // Adding a checkpoint at a specific location
+         space = board.getSpace(4,4);
+-        Checkpoint checkpoint = new Checkpoint(4,4); // Checkpoint position
++        CheckPoint checkpoint = new CheckPoint(1); // Checkpoint position
+         space.getActions().add(checkpoint); // Add the checkpoint to the space
+ 
++        space = board.getSpace(6,6);
++        CheckPoint checkpoint2 = new CheckPoint(2); // Checkpoint position
++        space.getActions().add(checkpoint2); // Add the checkpoint to the space
++
+         return board;
+     }
+ 
