@@ -31,17 +31,21 @@ import java.util.List;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public class Space extends Subject {
 
     public final Board board;
-
     public final int x;
     public final int y;
-
     private Player player;
+    public ConveyorBelt conveyorBelt;
 
+    public ConveyorBelt getConveyorBelt() {
+        return conveyorBelt;
+    }
+    public void setConveyorBelt(ConveyorBelt conveyorBelt) {
+        this.conveyorBelt = conveyorBelt;
+    }
 
     // XXX A3
     private List<Heading> walls = new ArrayList<>();
@@ -62,8 +66,7 @@ public class Space extends Subject {
 
     public void setPlayer(Player player) {
         Player oldPlayer = this.player;
-        if (player != oldPlayer &&
-                (player == null || board == player.board)) {
+        if (player != oldPlayer && (player == null || board == player.board)) {
             this.player = player;
             if (oldPlayer != null) {
                 // this should actually not happen
@@ -89,10 +92,24 @@ public class Space extends Subject {
 
         return walls;
     }
+
     public void addWall(Heading heading) {
-        System.out.println("AddWall"+heading);
+        System.out.println("AddWall" + heading);
         this.walls.add(heading);
     }
+    public void addAction(FieldAction action) {
+        System.out.println("AddAction" + action);
+        this.actions.add(action);
+    }
+    public boolean hasAction(Class<? extends FieldAction> actionClass) {
+        for (FieldAction action : actions) {
+            if (action.getClass() == actionClass) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasWall(Heading heading) {
 
         return walls.contains(heading);
