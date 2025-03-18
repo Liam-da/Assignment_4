@@ -197,23 +197,4 @@ class GameControllerTest {
         // Assert: The player should now be back to facing NORTH
         assertEquals(Heading.NORTH, player.getHeading(), "Player should be facing NORTH after second U-Turn!");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // TODO: Add more tests for assignment V2
 }
