@@ -264,53 +264,7 @@ public class GameController {
             }
         }
     }
-/*
-    // Implemented by Liam
-    public boolean moveForward(@NotNull Player player) {
-        Space currentSpace = player.getSpace();
-        if (currentSpace != null) {
-            Heading heading = player.getHeading();
-            Space nextSpace = board.getNeighbour(currentSpace, heading);
 
-            System.out.println(player.getName() + " forsøger at rykke frem fra " + currentSpace.x + "," + currentSpace.y);
-
-            if (nextSpace != null) {
-                if (currentSpace.hasWall(heading) || nextSpace.hasWall(heading.opposite())) {
-                    System.out.println("🚧 Bevægelse blokeret af væg!");
-                    return false;
-                }
-
-                Player playerInFront = nextSpace.getPlayer();
-                if (playerInFront != null) {
-                    System.out.println(player.getName() + " forsøger at skubbe " + playerInFront.getName());
-
-                    // *Her sikrer vi, at spilleren foran rykker sig!*
-                    boolean pushed = moveForward(playerInFront);
-
-                    if (!pushed) {
-                        System.out.println("⛔ Kan ikke skubbe " + playerInFront.getName() + " videre!");
-                        return false;
-                    } else {
-                        System.out.println("✅ " + playerInFront.getName() + " blev skubbet til "
-                                + playerInFront.getSpace().x + "," + playerInFront.getSpace().y);
-                    }
-                }
-
-                // *Spiller flytter sig nu, fordi pladsen er ledig*
-                currentSpace.setPlayer(null);
-                nextSpace.setPlayer(player);
-                player.setSpace(nextSpace);
-
-                board.incrementMoveCount();
-                System.out.println(player.getName() + " rykkede til " + nextSpace.x + "," + nextSpace.y);
-                return true;
-            } else {
-                System.out.println("❌ Ingen plads til at rykke frem!");
-            }
-        }
-        return false;
-    }
-*/
 public boolean moveForward(@NotNull Player player) {
     if (player.board == board) {
         Space space = player.getSpace();
@@ -334,7 +288,7 @@ public boolean moveForward(@NotNull Player player) {
     return false;
 }
 
-    public static class ImpossibleMoveException extends Throwable{
+    public static class ImpossibleMoveException extends Exception{
         public ImpossibleMoveException() {
         }
     }
