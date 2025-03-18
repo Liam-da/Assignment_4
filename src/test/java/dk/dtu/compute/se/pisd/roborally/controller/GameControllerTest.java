@@ -6,6 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link GameController} class.
+ * This test class verifies the core functionalities of player movement, turning, and game mechanics.
+ */
 class GameControllerTest {
 
     private final int TEST_WIDTH = 8;
@@ -14,6 +18,10 @@ class GameControllerTest {
     private Board board;
     private Player player;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes a new board, game controller, and a player.
+     */
     @BeforeEach
     void setUp() {
         board = new Board(TEST_WIDTH, TEST_HEIGHT);
@@ -25,17 +33,27 @@ class GameControllerTest {
         board.setCurrentPlayer(player);
     }
 
+    /**
+     * Cleans up the test environment after each test.
+     */
     @AfterEach
     void tearDown() {
         gameController = null;
     }
 
+    /**
+     * Tests whether the board and game controller are properly initialized.
+     */
     @Test
     void testSetup() {
         assertNotNull(board, "Board is not initialized correctly!");
         assertNotNull(gameController, "GameController is not initialized correctly!");
     }
 
+    /**
+     * Tests whether a player can move to a specific space.
+     * Ensures that the target space is updated correctly.
+     */
     @Test
     void testMoveCurrentPlayerToSpace() {
         Space targetSpace = board.getSpace(0, 4);
@@ -46,6 +64,10 @@ class GameControllerTest {
         assertEquals(player, targetSpace.getPlayer(), "Player should be on space (0,4)!");
     }
 
+    /**
+     * Tests whether the player moves forward correctly.
+     * Checks if the player's new position matches the expected space.
+     */
     @Test
     void testMoveForward() {
         Space startSpace = player.getSpace();
@@ -60,6 +82,10 @@ class GameControllerTest {
         }
     }
 
+    /**
+     * Tests that a player cannot move forward into a wall.
+     * Ensures that the player's position remains unchanged when blocked.
+     */
     @Test
     void testMoveForwardIntoWall() {
         Space startSpace = board.getSpace(2, 2);
@@ -73,6 +99,10 @@ class GameControllerTest {
         assertEquals(player, startSpace.getPlayer(), "Player should remain in the same space!");
     }
 
+    /**
+     * Tests whether the player correctly turns left.
+     * Verifies that the player's new heading is set properly.
+     */
     @Test
     void testTurnLeft() {
         player.setHeading(Heading.EAST);
@@ -80,6 +110,10 @@ class GameControllerTest {
         assertEquals(Heading.NORTH, player.getHeading(), "Player should face NORTH after turning left!");
     }
 
+    /**
+     * Tests whether the player correctly turns right.
+     * Verifies that the player's new heading is set properly.
+     */
     @Test
     void testTurnRight() {
         player.setHeading(Heading.EAST);
@@ -87,6 +121,10 @@ class GameControllerTest {
         assertEquals(Heading.SOUTH, player.getHeading(), "Player should face SOUTH after turning right!");
     }
 
+    /**
+     * Tests whether the player can move backward correctly.
+     * Ensures that the player's position updates to the correct space.
+     */
     @Test
     void testMoveBackward() {
         Space startSpace = board.getSpace(3, 3);
@@ -105,6 +143,10 @@ class GameControllerTest {
         assertEquals(player, expectedSpace.getPlayer(), "Player should now be in the space behind!");
     }
 
+    /**
+     * Tests whether the player can perform a U-turn correctly.
+     * Ensures that the player's heading updates properly after two consecutive U-turns.
+     */
     @Test
     void testUTurn() {
         player.setSpace(board.getSpace(4, 4));
