@@ -38,9 +38,10 @@ public class BoardFactory {
     }
 
     /**
-     * Returns a list of available board names.
+     * Returns a list of available board names that can be selected to create a board.
+     * The method defines the available board names as "Board1" and "Board2".
      *
-     * @return List of available board names.
+     * @return a list of available board names.
      */
     public List<String> getAvailableBoardNames() {
 
@@ -70,6 +71,12 @@ public class BoardFactory {
         return board;
     }
 
+    /**
+     * Configures the specific layout and features for Board1.
+     * Sets up walls and checkpoints for Board1.
+     *
+     * @param board the Board object to configure.
+     */
     private void setupBoard1(Board board) {
         addWall(board, 0, 0, Heading.SOUTH);
         addWall(board, 1, 0, Heading.NORTH);
@@ -80,6 +87,12 @@ public class BoardFactory {
         addCheckpoint(board, 2, 6, 3);
     }
 
+    /**
+     * Configures the specific layout and features for Board2.
+     * Sets up walls and checkpoints for Board2.
+     *
+     * @param board the Board object to configure.
+     */
     private void setupBoard2(Board board) {
 
         addWall(board, 4, 4, Heading.EAST);
@@ -93,6 +106,14 @@ public class BoardFactory {
         addCheckpoint(board, 7, 3, 3);
     }
 
+    /**
+     * Adds a wall to a specific space on the board at the given coordinates and heading.
+     *
+     * @param board   the Board to which the wall should be added.
+     * @param x       the x-coordinate of the space.
+     * @param y       the y-coordinate of the space.
+     * @param heading the direction of the wall (Heading.NORTH, Heading.SOUTH, Heading.EAST, or Heading.WEST).
+     */
     private void addWall(Board board, int x, int y, Heading heading) {
         Space space = board.getSpace(x, y);
         if (space != null) {
@@ -100,6 +121,14 @@ public class BoardFactory {
         }
     }
 
+    /**
+     * Adds a checkpoint to a specific space on the board at the given coordinates.
+     *
+     * @param board           the Board to which the checkpoint should be added.
+     * @param x               the x-coordinate of the space.
+     * @param y               the y-coordinate of the space.
+     * @param checkpointNumber the checkpoint number to associate with the space.
+     */
     private void addCheckpoint(Board board, int x, int y, int checkpointNumber) {
         Space space = board.getSpace(x, y);
         if (space != null) {

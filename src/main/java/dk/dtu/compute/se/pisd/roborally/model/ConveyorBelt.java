@@ -19,30 +19,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-package dk.dtu.compute.se.pisd.roborally.controller;
+package dk.dtu.compute.se.pisd.roborally.model;
 
 
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents a conveyor belt on a space.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 // XXX A3
-public class
-
-
-
-
-ConveyorBelt extends FieldAction {
+public class ConveyorBelt extends FieldAction {
 
     private Heading heading;
 
+    public ConveyorBelt() {
+        super();
+    }
 
     public Heading getHeading() {
         return heading;
@@ -61,17 +57,17 @@ ConveyorBelt extends FieldAction {
         // Implemented by Liam
         Player player = space.getPlayer(); // Get the player currently in this space
         if (player != null) {
-            Heading heading = player.getHeading(); // Get the direction the player is facing
-            Space targetSpace = gameController.board.getNeighbour(space, heading); // Get the neighbor in that direction
+            Heading conveyorDirection = this.getHeading(); // Get conveyor belt's direction
+            Space targetSpace = gameController.board.getNeighbour(space, conveyorDirection); // Get the next space in conveyor direction
 
-            if (targetSpace != null && targetSpace.getPlayer() == null) { // Check if the target space is empty
+            if (targetSpace != null && targetSpace.getPlayer() == null) { // Move only if space is empty
                 player.setSpace(targetSpace); // Move the player to the target space
+                System.out.println("🚀 Player moved by Conveyor Belt to (" + targetSpace.x + ", " + targetSpace.y + ")");
                 return true; // Successfully moved the player
+            } else {
+                System.out.println("⛔ Conveyor Belt blocked at (" + space.x + ", " + space.y + ")");
             }
         }
         return false;
     }
-
 }
-
-

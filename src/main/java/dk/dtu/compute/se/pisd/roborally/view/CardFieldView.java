@@ -41,10 +41,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * ...
+ * CardFieldView represents a graphical view of a CommandCardField in the RoboRally game.
+ * It is responsible for rendering the field, handling drag-and-drop interactions, and updating the view when the field's state changes.
+ * This class implements the ViewObserver interface to update the view when the associated CommandCardField changes.
+ * It listens for drag-and-drop events, and visually displays the status of the field (whether it is empty, showing a card, or invisible).
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public class CardFieldView extends GridPane implements ViewObserver {
 
@@ -59,6 +61,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
     final public static int CARDFIELD_WIDTH = 65;
     final public static int CARDFIELD_HEIGHT = 100;
 
+    // Border and background styles for different states of the card field
     final public static Border BORDER_DEFAULT = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(2)));
     final public static Border BORDER_READY = new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, new BorderWidths(4)));
     final public static Border BORDER_ACTIVE = new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, new BorderWidths(4)));
@@ -71,12 +74,17 @@ public class CardFieldView extends GridPane implements ViewObserver {
     final public static Background BG_NONE = new Background(new BackgroundFill(Color.LIGHTGRAY,  null, null));
     final public static Background BG_INVISIBLE = new Background(new BackgroundFill(Color.DARKGRAY,  null, null));
 
+    // Instance variables
     private CommandCardField field;
-
     private Label label;
-
     private GameController gameController;
 
+    /**
+     * Constructs a new CardFieldView object.
+     *
+     * @param gameController the game controller used to control the game logic
+     * @param field the CommandCardField this view represents
+     */
     public CardFieldView(@NotNull GameController gameController, @NotNull CommandCardField field) {
         this.gameController = gameController;
         this.field = field;
@@ -99,6 +107,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
         label.setMouseTransparent(true);
         this.add(label, 0, 0);
 
+        // Register event handlers for drag-and-drop interactions
         this.setOnDragDetected(new OnDragDetectedHandler());
         this.setOnDragOver(new OnDragOverHandler());
         this.setOnDragEntered(new OnDragEnteredHandler());
@@ -106,12 +115,19 @@ public class CardFieldView extends GridPane implements ViewObserver {
         this.setOnDragDropped(new OnDragDroppedHandler());
         this.setOnDragDone(new OnDragDoneHandler());
 
+        // Attach to the CommandCardField and update the view when the state changes
         field.attach(this);
         field.player.board.attach(this);
         field.player.attach(this);
         update(field);
     }
 
+    /**
+     * Updates the view based on changes to the associated subject.
+     * This method is called when the state of the field or player changes.
+     *
+     * @param subject the subject that has changed
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == field && subject != null) {
@@ -129,6 +145,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
         }
     }
 
+    /**
+     * Handles drag detection when the mouse is pressed on a CardFieldView.
+     */
     private class OnDragDetectedHandler implements EventHandler<MouseEvent> {
 
         @Override
@@ -157,8 +176,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
     }
 
 
-    // TODO redundant with DragEnterHandler (but some functionality needs to be moved from
-    //      here to DragEnterHandler
+    // Drag over handler (manages accepted transfer modes)
     private class OnDragOverHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -181,6 +199,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    // Drag entered handler (updates background to indicate the drop target)
     private class OnDragEnteredHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -204,6 +223,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    // Drag exited handler (resets background when drag leaves the target)
     private class OnDragExitedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -227,6 +247,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    // Drag dropped handler (sets the card on the field if drop is accepted)
     private class OnDragDroppedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -264,6 +285,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    // Drag done handler (cleans up after the drag operation)
     private class OnDragDoneHandler implements EventHandler<DragEvent> {
 
         @Override

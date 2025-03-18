@@ -25,19 +25,34 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
- *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * Represents a command card in the RoboRally game. A command card contains a single
+ * command that a player can use to perform actions on their turn. The card is associated
+ * with a specific command, and the player can execute the action associated with that command.
+ * This class extends the {@link Subject} class, which is part of the observer pattern
+ * allowing for state updates and notifications to be sent to observers when the card's state changes.
  *
  */
 public class CommandCard extends Subject {
 
+    /**
+     * The command associated with this command card.
+     */
     final public Command command;
 
+    /**
+     * Constructs a new CommandCard with the specified command.
+     *
+     * @param command the command to associate with this card
+     */
     public CommandCard(@NotNull Command command) {
         this.command = command;
     }
 
+    /**
+     * Gets the name of the command associated with this command card.
+     *
+     * @return the display name of the command
+     */
     public String getName() {
         return command.displayName;
     }

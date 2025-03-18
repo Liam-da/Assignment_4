@@ -22,26 +22,61 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 /**
- * ...
- *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * Enum representing different commands that a player can execute in the RoboRally game.
+ * Each command has a display name that describes its action.
+ * The enum provides a simple way of representing various movement and action commands.
+ * This enum includes commands like moving forward, turning, fast forward, U-turn, and more.
+ * The commands are as follows:
+ * - FORWARD: Move forward one space.
+ * - RIGHT: Turn right.
+ * - LEFT: Turn left.
+ * - FAST_FORWARD: Move forward with a higher speed.
+ * - U_TURN: Make a U-turn (turn 180 degrees).
+ * - BACKWARD: Move backward one space.
+ * - LEFT_OR_RIGHT: A command that allows the player to choose between turning left or right.
  *
  */
 public enum Command {
 
     // This is a very simplistic way of realizing different commands.
-
+    /**
+     * Move forward one space.
+     */
     FORWARD("Fwd"),
+    /**
+     * Turn to the right.
+     */
     RIGHT("Turn Right"),
+    /**
+     * Turn to the left.
+     */
     LEFT("Turn Left"),
+    /**
+     * Move forward with a higher speed.
+     */
     FAST_FORWARD("Fast Fwd"),
-    //Implemented by Hannah
-    U_TURN("U Turn"),
+    /**
+     * Make a U-turn (180-degree turn).
+     */    U_TURN("U Turn"),
+    /**
+     * Move backward one space.
+     */
     BACKWARD("Backward"),
+    /**
+     * A command that allows the player to choose between turning left or right.
+     */
     LEFT_OR_RIGHT("Left or Right");
 
+    /**
+     * The display name of the command that describes the action.
+     */
     final public String displayName;
 
+    /**
+     * Constructor to initialize the display name of the command.
+     *
+     * @param displayName the display name for the command
+     */
     Command(String displayName) {
         this.displayName = displayName;
     }

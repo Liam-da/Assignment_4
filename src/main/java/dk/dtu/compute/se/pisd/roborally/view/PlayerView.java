@@ -36,7 +36,13 @@ import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * This class represents the view for a single player in the RoboRally game.
+ * It displays the player's program (instructions to be executed), their available command cards,
+ * and provides interaction buttons to control the game flow such as finishing programming,
+ * executing programs, and executing the current register.
+ *
+ * The player view listens for changes in the player's state and updates accordingly. It also interacts
+ * with the game controller to handle game logic and player actions during the game phases.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -64,6 +70,12 @@ public class PlayerView extends Tab implements ViewObserver {
 
     private GameController gameController;
 
+    /**
+     * Constructs a PlayerView for the specified player in the game.
+     *
+     * @param gameController The controller that manages the game logic.
+     * @param player The player whose actions and state are represented by this view.
+     */
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         super(player.getName());
         this.setStyle("-fx-text-base-color: " + player.getColor() + ";");
@@ -88,12 +100,6 @@ public class PlayerView extends Tab implements ViewObserver {
             }
         }
 
-        // FIXME the following buttons should actually not be on the tabs of the individual
-        //       players, but on the PlayersView (view for all players). This should be
-        //       refactored.
-
-        // TODO V2: the following buttons should be associated with the proper methods
-        //          in the game controller
 
         finishButton = new Button("Finish Programming");
         finishButton.setOnAction(e -> gameController.finishProgrammingPhase());
@@ -130,8 +136,6 @@ public class PlayerView extends Tab implements ViewObserver {
         top.getChildren().add(cardsLabel);
         top.getChildren().add(cardsPane);
 
-        // TODO A3 add a label for the status of this player could be added here
-        //      ege showing the number of achieved chekpoints (etc).
 
         if (player.board != null) {
             player.board.attach(this);
@@ -139,10 +143,17 @@ public class PlayerView extends Tab implements ViewObserver {
         }
     }
 
+    /**
+     * Updates the view based on changes to the subject (i.e., the player's board state).
+     * This method is called whenever there is a change in the player's board, such as a change in phase or
+     * an update to the player's program or command cards.
+     *
+     * @param subject The subject being observed, typically the player's board.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == player.board) {
-            // TODO A3 update the status label for this player
+
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CardFieldView cardFieldView = programCardViews[i];
                 if (cardFieldView != null) {
@@ -205,10 +216,7 @@ public class PlayerView extends Tab implements ViewObserver {
                 playerInteractionPanel.getChildren().clear();
 
                 if (player.board.getCurrentPlayer() == player) {
-                    // TODO V3: these buttons should be shown only when there is
-                    //      an interactive command card, and the buttons should represent
-                    //      the player's choices of the interactive command card. The
-                    //      following is just a mockup showing two options
+
                     CommandCardField cardField = player.getProgramField(player.board.getStep());
                     if (cardField != null && cardField.getCard().command == Command.LEFT_OR_RIGHT) {
                         Button turnLeftButton = new Button("Turn Left");

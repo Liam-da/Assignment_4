@@ -22,8 +22,10 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
+import dk.dtu.compute.se.pisd.roborally.model.ConveyorBelt;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.event.EventHandler;
@@ -34,26 +36,41 @@ import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
- *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
+ */
+/**
+ * The BoardView class is responsible for displaying the game board and player information
+ * in the RoboRally game. It updates the visual representation of the game based on changes
+ * to the board and player movements. It also includes a mouse event handler to facilitate
+ * manual player movement for testing purposes.
+ * This class implements the ViewObserver interface, allowing it to be updated when the
+ * state of the board changes.
  */
 public class BoardView extends VBox implements ViewObserver {
 
+    /** The game board being displayed */
     private Board board;
 
+    /** The main pane for displaying the board */
     private GridPane mainBoardPane;
+
+    /** Array of SpaceView objects representing each space on the board */
     private SpaceView[][] spaces;
 
+    /** The view for displaying players */
     private PlayersView playersView;
 
+    /** Label for displaying the status message */
     private Label statusLabel;
 
+    /** Event handler for handling clicks on spaces */
     private SpaceEventHandler spaceEventHandler;
 
-
-
+    /**
+     * Constructs a BoardView instance for the given game controller.
+     *
+     * @param gameController the GameController object controlling the game
+     */
 
     public BoardView(@NotNull GameController gameController) {
         board = gameController.board;
@@ -74,36 +91,68 @@ public class BoardView extends VBox implements ViewObserver {
             for (int y = 0; y < board.height; y++) {
                 Space space = board.getSpace(x, y);
                 SpaceView spaceView = new SpaceView(space);
+
+                // Add conveyor belt visualization
+                for (FieldAction action : space.getActions()) {
+                    if (action instanceof ConveyorBelt) {
+                        spaceView.drawConveyorBelt(((ConveyorBelt) action).getHeading());
+                    }
+                }
+
                 spaces[x][y] = spaceView;
                 mainBoardPane.add(spaceView, x, y);
                 spaceView.setOnMouseClicked(spaceEventHandler);
             }
         }
-
+        // Attach the view to the board so it can be updated
         board.attach(this);
         update(board);
     }
 
+    /**
+     * Updates the view when the state of the subject changes.
+     *
+     * @param subject the subject that has been updated
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {
             //System.out.println("BoardView updated! Move Count: " + board.getMoveCount());
+
+            // Update the status label with the board's status message
             statusLabel.setText(board.getStatusMessage());
+
+            for (int x = 0; x < board.width; x++) {
+                for (int y = 0; y < board.height; y++) {
+                    spaces[x][y].updateView(board.getSpace(x, y));
+                }
+            }
         }
     }
 
 
 
-    // XXX this handler and its uses should eventually be deleted! This is just to help test the
+   // XXX this handler and its uses should eventually be deleted! This is just to help test the
     //     behaviour of the game by being able to explicitly move the players on the board!
     private class SpaceEventHandler implements EventHandler<MouseEvent> {
 
+       /** The game controller used to move players */
         final public GameController gameController;
 
+       /**
+        * Constructs a SpaceEventHandler with the given game controller.
+        *
+        * @param gameController the GameController object controlling the game
+        */
         public SpaceEventHandler(@NotNull GameController gameController) {
             this.gameController = gameController;
         }
 
+       /**
+        * Handles mouse click events on spaces.
+        *
+        * @param event the mouse event triggered by clicking a space
+        */
         @Override
         public void handle(MouseEvent event) {
             Object source = event.getSource();
@@ -112,9 +161,10 @@ public class BoardView extends VBox implements ViewObserver {
                 Space space = spaceView.space;
                 Board board = space.board;
 
+                // Move the current player to the clicked space and increment the move count
                 if (board == gameController.board) {
                     gameController.moveCurrentPlayerToSpace(space);
-                    board.incrementMoveCount(); // hvergang en spiller bevæger sige.
+                    board.incrementMoveCount(); // Increment move count each time a player moves
                     event.consume();
                 }
             }
