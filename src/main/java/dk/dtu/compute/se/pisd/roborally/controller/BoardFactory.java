@@ -57,7 +57,7 @@ public class BoardFactory {
         Board board;
 
         if ("Board1".equals(name)) {
-            board = new Board(8, 8, "Board1");
+            board = new Board(14, 8, "Board1");
             setupBoard1(board);
         } else if ("Board2".equals(name)) {
             board = new Board(14, 8, "Board2");
