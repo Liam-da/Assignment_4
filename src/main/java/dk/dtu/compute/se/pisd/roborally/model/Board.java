@@ -106,7 +106,7 @@ public class Board extends Subject {
             }
         }
 
-        int[][] conveyorBeltPositions = {{2, 3, Heading.EAST.ordinal()}, {4, 5, Heading.NORTH.ordinal()}, {6, 2, Heading.WEST.ordinal()}, {1, 7, Heading.SOUTH.ordinal()}, {8, 4, Heading.EAST.ordinal()}};
+        int[][] conveyorBeltPositions = {{2, 3, Heading.EAST.ordinal()}, {4, 5, Heading.NORTH.ordinal()}, {6, 2, Heading.WEST.ordinal()}, {1, 7, Heading.SOUTH.ordinal()}, {7, 4, Heading.EAST.ordinal()}};
         for (int[] pos : conveyorBeltPositions) {
             int x = pos[0];
             int y = pos[1];
