@@ -28,7 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ...
+ * Represents a space on the game board in RoboRally.
+ * Each space has coordinates (x, y) and may contain a player,
+ * walls in specific directions, and field actions.
+ *
+ * The class extends {@link Subject} to allow observers to be notified
+ * when changes occur, such as a player moving into or out of the space.
+ *
+ * <p>Walls and field actions should only be modified during game setup,
+ * not while the game is running.</p>
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -53,6 +61,14 @@ public class Space extends Subject {
     // XXX A3
     private List<FieldAction> actions = new ArrayList<>();
 
+    /**
+     * Constructs a new space at the given coordinates on the specified board.
+     * Initially, the space does not contain a player.
+     *
+     * @param board The board this space belongs to.
+     * @param x The x-coordinate of this space.
+     * @param y The y-coordinate of this space.
+     */
     public Space(Board board, int x, int y) {
         this.board = board;
         this.x = x;
@@ -60,10 +76,22 @@ public class Space extends Subject {
         player = null;
     }
 
+
+    /**
+     * Returns the player currently occupying this space.
+     *
+     * @return The player in this space, or null if unoccupied.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Sets the player occupying this space. If the player is moved to this space,
+     * it updates the player's position and ensures consistency.
+     *
+     * @param player The player to set in this space, or null to clear the space.
+     */
     public void setPlayer(Player player) {
         Player oldPlayer = this.player;
         if (player != oldPlayer && (player == null || board == player.board)) {
@@ -89,14 +117,26 @@ public class Space extends Subject {
      */
     // XXX A3
     public List<Heading> getWalls() {
-
         return walls;
     }
+
+    /**
+     * Adds a wall in the specified direction to this space.
+     *
+     * @param heading The direction in which the wall is added.
+     */
 
     public void addWall(Heading heading) {
         System.out.println("AddWall" + heading);
         this.walls.add(heading);
     }
+
+    /**
+     * Checks if there is a wall in the specified direction on this space.
+     *
+     * @param heading The direction to check for a wall.
+     * @return True if there is a wall in the given direction, false otherwise.
+     */
     public void addAction(FieldAction action) {
         System.out.println("AddAction" + action);
         this.actions.add(action);
@@ -123,11 +163,15 @@ public class Space extends Subject {
      *
      * @return the list of field actions on this space
      */
-    // XXX A3
+
     public List<FieldAction> getActions() {
         return actions;
     }
 
+    /**
+     * Notifies observers that the player on this space has changed.
+     * This is used when a player's attributes change and an update is needed.
+     */
     void playerChanged() {
         // This is a minor hack; since some views that are registered with the space
         // also need to update when some player attributes change, the player can

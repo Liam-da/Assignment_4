@@ -31,14 +31,29 @@ public enum Heading {
 
     SOUTH, WEST, NORTH, EAST;
 
+    /**
+     * Returns the next heading in a clockwise direction.
+     *
+     * @return the next heading in sequence (e.g., NORTH -> EAST -> SOUTH -> WEST -> NORTH).
+     */
     public Heading next() {
         return values()[(this.ordinal() + 1) % values().length];
     }
 
+    /**
+     * Returns the previous heading in a counterclockwise direction.
+     *
+     * @return the previous heading in sequence (e.g., NORTH -> WEST -> SOUTH -> EAST -> NORTH).
+     */
     public Heading prev() {
         return values()[(this.ordinal() + values().length - 1) % values().length];
     }
 
+    /**
+     * Returns the opposite heading.
+     *
+     * @return the heading opposite to the current one (e.g., NORTH -> SOUTH, EAST -> WEST).
+     */
     public Heading opposite (){
         switch (this){
             case NORTH: return SOUTH;

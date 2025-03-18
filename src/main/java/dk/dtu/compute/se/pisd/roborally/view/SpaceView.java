@@ -39,22 +39,42 @@ import org.jetbrains.annotations.NotNull;
 
 
 /**
- * ...
+ * Represents a graphical view of a game space in the RoboRally game.
+ * The SpaceView is responsible for visually displaying the state of a space on the game board,
+ * including any players, walls, and actions (like checkpoints) associated with the space.
+ * It reacts to changes in the state of the space and updates the view accordingly.
+ *
+ * This class extends {@link StackPane} to provide a container that can display different graphical
+ * elements (e.g., players, walls, checkpoints) in the space.
+ * It implements {@link ViewObserver} to observe changes in the space and update the view accordingly.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class SpaceView extends StackPane implements ViewObserver {
 
-    final public static int SPACE_HEIGHT = 40; // 60; // 75;
-    final public static int SPACE_WIDTH = 40;  // 60; // 75;
+    /**
+     * The height of the space view.
+     */
+    final public static int SPACE_HEIGHT = 40;
+
+    /**
+     * The width of the space view.
+     */
+    final public static int SPACE_WIDTH = 40;
 
     public final Space space;
 
-
+    /**
+     * Constructs a new SpaceView for the given space.
+     * The view initializes the space's graphical representation, sets its size, and
+     * attaches itself as an observer to the space to track changes in its state.
+     *
+     * @param space The space that this view represents.
+     */
     public SpaceView(@NotNull Space space) {
         this.space = space;
 
-        // XXX the following styling should better be done with styles
+        // Set size properties for the space view
         this.setPrefWidth(SPACE_WIDTH);
         this.setMinWidth(SPACE_WIDTH);
         this.setMaxWidth(SPACE_WIDTH);
@@ -63,6 +83,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
+        // Alternate the background color based on the coordinates of the space
         if ((space.x + space.y) % 2 == 0) {
             this.setStyle("-fx-background-color: white;");
         } else {
@@ -76,6 +97,34 @@ public class SpaceView extends StackPane implements ViewObserver {
         update(space);
     }
 
+    /**
+     * Updates the visual representation of the player in the space.
+     * If there is a player in the space, an arrow is drawn to indicate the player's position and heading.
+     */
+    private void updatePlayer() {
+        Player player = space.getPlayer();
+        if (player != null) {
+            Polygon arrow = new Polygon(0.0, 0.0,
+                    10.0, 20.0,
+                    20.0, 0.0 );
+            try {
+                arrow.setFill(Color.valueOf(player.getColor()));
+            } catch (Exception e) {
+                arrow.setFill(Color.MEDIUMPURPLE);
+            }
+
+            arrow.setRotate((90*player.getHeading().ordinal())%360);
+            this.getChildren().add(arrow);
+        }
+    }
+
+    /**
+     * Updates the space view whenever the state of the associated space changes.
+     * The method clears the current graphical elements and re-adds the updated elements
+     * (such as the player, walls, and actions).
+     *
+     * @param subject The subject that triggered the update. In this case, it is the associated space.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == this.space) {
@@ -97,7 +146,7 @@ public class SpaceView extends StackPane implements ViewObserver {
                 }
             }
 
-
+            // Add walls to the space view
             for (Heading wall : space.getWalls()) {
                 Rectangle rectangle = new Rectangle();
                 rectangle.setFill(Color.RED);

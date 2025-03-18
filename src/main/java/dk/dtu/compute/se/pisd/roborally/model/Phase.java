@@ -28,5 +28,18 @@ package dk.dtu.compute.se.pisd.roborally.model;
  *
  */
 public enum Phase {
-    INITIALISATION, PROGRAMMING, ACTIVATION, PLAYER_INTERACTION,FINISHED
+    /** The game setup phase. */
+    INITIALISATION,
+
+    /** Players select their moves. */
+    PROGRAMMING,
+
+    /** Execution of player moves and board effects. */
+    ACTIVATION,
+
+    /** Players interact with each other. */
+    PLAYER_INTERACTION,
+
+    /** The game has ended. */
+    FINISHED
 }

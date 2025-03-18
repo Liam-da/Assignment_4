@@ -48,19 +48,40 @@ import java.util.Optional;
  */
 public class AppController implements Observer {
 
+    /**
+     * List of available player number options.
+     */
     final private List<Integer> PLAYER_NUMBER_OPTIONS = Arrays.asList(2, 3, 4, 5, 6);
+
+    /**
+     * List of available player colors.
+     */
     final private List<String> PLAYER_COLORS = Arrays.asList("red", "green", "blue", "orange", "grey", "magenta");
 
     final private RoboRally roboRally;
 
     private GameController gameController;
+
+    /**
+     * Singleton instance of BoardFactory to create game boards.
+     */
     private BoardFactory boardFactory = BoardFactory.getInstance(); // Singleton instance
 
+    /**
+     * Constructor that initializes the AppController with the provided RoboRally application.
+     *
+     * @param roboRally The RoboRally application instance.
+     */
     public AppController(@NotNull RoboRally roboRally) {
 
         this.roboRally = roboRally;
     }
 
+    /**
+     * Displays a dialog for selecting a game board.
+     *
+     * @return The name of the selected board.
+     */
     private String showBoardSelectionDialog() {
         List<String> boardOptions = BoardFactory.getInstance().getAvailableBoardNames();
 
@@ -73,16 +94,13 @@ public class AppController implements Observer {
         return result.orElse(boardOptions.get(0));
     }
 
-
+    /**
+     * Starts a new game by prompting the user for board and player configurations.
+     * Initializes game controller, creates players, and starts the programming phase.
+     */
     public void newGame() {
         String selectedBoard = showBoardSelectionDialog();
         Board board = boardFactory.createBoard(selectedBoard);
-
-       /* if (gameController != null) {
-            if (!stopGame()) {
-                System.err.println("Kunne ikke stoppe det gamle spil, men fortsætter alligevel.");
-            }
-        }*/
 
 
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.getFirst(), PLAYER_NUMBER_OPTIONS);
@@ -117,8 +135,13 @@ public class AppController implements Observer {
     }
 
 
+    /**
+     * Saves the current game state to a file.
+     * The saved game data includes the board and its state.
+     */
+
     public void saveGame() {
-        // Implemented by Liam
+
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("roborally_save.dat"))) {
             out.writeObject(gameController.board);
             System.out.println("RoboRally game saved successfully.");
@@ -127,6 +150,11 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Loads a previously saved game state from a file.
+     * The game data is deserialized and used to restore the game state.
+     * If loading fails, a new game is started.
+     */
     public void loadGame() {
         // Implemented by Liam
 
@@ -179,8 +207,10 @@ public class AppController implements Observer {
         return false;
     }
 
-    //If a game is running, it asks the user for confirmation before exiting.
-    //If no game is running (or the user agrees to exit), the application shuts down.
+    /**
+     * Exits the application, prompting the user for confirmation if a game is running.
+     * If the user chooses to exit, the application will shut down.
+     */
     public void exit() {
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -200,11 +230,21 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Checks whether a game is currently running.
+     *
+     * @return true if a game is running, false otherwise.
+     */
     public boolean isGameRunning() {
         return gameController != null;
     }
 
-
+    /**
+     * Updates the observer with changes to the observed subject.
+     * In this implementation, no action is taken for now.
+     *
+     * @param subject The observed subject.
+     */
     @Override
     public void update(Subject subject) {
         // XXX do nothing for now
