@@ -78,11 +78,11 @@ public class AppController implements Observer {
         String selectedBoard = showBoardSelectionDialog();
         Board board = boardFactory.createBoard(selectedBoard);
 
-        if (gameController != null) {
+       /* if (gameController != null) {
             if (!stopGame()) {
                 System.err.println("Kunne ikke stoppe det gamle spil, men fortsætter alligevel.");
             }
-        }
+        }*/
 
 
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.getFirst(), PLAYER_NUMBER_OPTIONS);
@@ -100,6 +100,8 @@ public class AppController implements Observer {
                 Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                 player.setName("Player " + (i + 1));
                 board.addPlayer(player);
+                player.setSpace(board.getSpace(i,i));
+
             }
 
             if (board.getPlayersNumber() > 0) {
@@ -109,7 +111,8 @@ public class AppController implements Observer {
             gameController.startProgrammingPhase();
 
 
-            Platform.runLater(() -> roboRally.createBoardView(gameController));
+            //Platform.runLater(() ->
+                    roboRally.createBoardView(gameController);
         }
     }
 

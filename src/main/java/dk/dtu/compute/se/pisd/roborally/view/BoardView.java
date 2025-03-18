@@ -87,7 +87,7 @@ public class BoardView extends VBox implements ViewObserver {
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {
-            System.out.println("BoardView updated! Move Count: " + board.getMoveCount());
+            //System.out.println("BoardView updated! Move Count: " + board.getMoveCount());
             statusLabel.setText(board.getStatusMessage());
         }
     }
