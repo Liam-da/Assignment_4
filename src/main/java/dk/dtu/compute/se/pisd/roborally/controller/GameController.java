@@ -164,6 +164,11 @@ public class GameController {
     // XXX V2
     private void executeNextStep() {
         //System.out.println("Executing next step. Current Phase: " + board.getPhase());
+        if(board.getPhase() == Phase.FINISHED){
+            System.out.println("The game is over");
+            return;
+        }
+
         if (board.getPhase() == Phase.PLAYER_INTERACTION) {
             System.out.println("Player interaction complete. Resuming activation phase.");
             board.setPhase(Phase.ACTIVATION);

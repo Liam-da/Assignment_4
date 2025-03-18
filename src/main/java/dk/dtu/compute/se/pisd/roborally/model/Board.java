@@ -220,8 +220,7 @@ public class Board extends Subject {
         // status of the game
 
         // Implemented by Liam
-        return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount();
-
+        return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount() + ", Checkpoint = " + getCurrentPlayer().getCheckPointCounter();
 
     }
     public void incrementMoveCount() {
