@@ -48,7 +48,7 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
 
-    private int checkPointCounter = 1;
+    private int checkPointCounter = 0;
 
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
