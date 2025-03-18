@@ -30,42 +30,67 @@ import java.util.List;
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
 /**
- * This represents a RoboRally game board. Which gives access to
- * all the information of current state of the games. Note that
- * the terms board and game are used almost interchangeably.
+ * Represents a RoboRally game board. The board provides access to all information
+ * related to the current state of the game. The terms "board" and "game" are used
+ * interchangeably in this context.
+ * This class is responsible for managing the grid of spaces, handling the players,
+ * tracking the current player, and maintaining the game phase and step-wise progression.
+ * It also provides methods for managing player movement, game status, and notifications.
  *
- * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class Board extends Subject {
-
+    /**
+     * The number of columns in the board.
+     */
     public final int width;
-
+    /**
+     * The number of rows in the board.
+     */
     public final int height;
-
+    /**
+     * The name of the board.
+     */
     public final String boardName;
-
+    /**
+     * The unique identifier for the game.
+     */
     private Integer gameId;
-
+    /**
+     * The 2D array of spaces that make up the board.
+     */
     private final Space[][] spaces;
-
+    /**
+     * A list of players in the game.
+     */
     private final List<Player> players = new ArrayList<>();
-
+    /**
+     * The current player in the game.
+     */
     private Player current;
-
+    /**
+     * The current phase of the game.
+     */
     private Phase phase = INITIALISATION;
-
+    /**
+     * The current step of the game.
+     */
     private int step = 0;
-
+    /**
+     * A flag indicating whether the game is in step-by-step mode.
+     */
     private boolean stepMode;
+    /**
+     * The number of moves made so far in the game.
+     */
     private int moveCount;
 
     /**
-     * The board is represented of spaces that is a 2D array of space object.
+     * Constructs a new game board with the specified dimensions and name.
+     * Initializes all spaces on the board.
      *
-     *
-     * @param width the numbers of columns in the board
-     * @param height the numbers of rows in the board
-     * @param boardName the given board name
+     * @param width the number of columns in the board
+     * @param height the number of rows in the board
+     * @param boardName the name of the board
      */
     public Board(int width, int height, @NotNull String boardName) {
         this.boardName = boardName;
@@ -100,29 +125,30 @@ public class Board extends Subject {
     }
 
     /**
-     *The boards size is determent by the width and the height.
-     * @param width
-     * @param height
+     * Constructs a new game board with the specified dimensions and a default name.
+     *
+     * @param width the number of columns in the board
+     * @param height the number of rows in the board
      */
     public Board(int width, int height) {
         this(width, height, "defaultboard");
     }
 
     /**
-     * Gets the game id, and returns it.
-     * @return
+     * Gets the unique game ID.
+     *
+     * @return the current game ID
      */
     public Integer getGameId() {
         return gameId;
     }
 
     /**
-     * Sets the game id. If the set game id is null it will assign the new game id, else if the game id is already set,
-     * the method checks if the new value is different.
-     * If different, it throws an IllegalStateException to prevent modification.
+     * Sets the game ID. If the game ID is already set, it throws an IllegalStateException
+     * if the new value is different.
      *
-     * @param gameId the given game id
-     * @throws IllegalStateException to prevent modification
+     * @param gameId the new game ID
+     * @throws IllegalStateException if the game ID is already set to a different value
      */
     public void setGameId(int gameId) {
         if (this.gameId == null) {
@@ -134,6 +160,13 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Gets the space at the specified coordinates on the board.
+     *
+     * @param x the x-coordinate (column index) of the space
+     * @param y the y-coordinate (row index) of the space
+     * @return the space at the given coordinates, or null if out of bounds
+     */
     public Space getSpace(int x, int y) {
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return spaces[x][y];
@@ -143,13 +176,20 @@ public class Board extends Subject {
     }
 
     /**
-     * Gets the players number, and returns it.
-     * @return
+     * Gets the number of players currently in the game.
+     *
+     * @return the number of players
      */
     public int getPlayersNumber() {
         return players.size();
     }
 
+    /**
+     * Adds a player to the game, ensuring the player is not already added.
+     * Notifies all observers of the change.
+     *
+     * @param player the player to add
+     */
     public void addPlayer(@NotNull Player player) {
         if (player.board == this && !players.contains(player)) {
             players.add(player);
@@ -157,6 +197,12 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Gets the player at the specified index.
+     *
+     * @param i the index of the player in the list
+     * @return the player at the given index, or null if out of bounds
+     */
     public Player getPlayer(int i) {
         if (i >= 0 && i < players.size()) {
             return players.get(i);
@@ -166,17 +212,18 @@ public class Board extends Subject {
     }
 
     /**
-     * Gets the current player's turn, and returns it.
-     * @return
+     * Gets the current player in the game.
+     *
+     * @return the current player
      */
     public Player getCurrentPlayer() {
         return current;
     }
 
     /**
-     * Changes the current player and notifies.
+     * Sets the current player and notifies observers of the change.
      *
-     * @param player the given player
+     * @param player the new current player
      */
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
@@ -186,13 +233,21 @@ public class Board extends Subject {
     }
 
     /**
-     * Tracks step-by-step execution
-     * @return
+     * Gets the current phase of the game.
+     *
+     * @return the current game phase
      */
     public Phase getPhase() {
         return phase;
     }
 
+    /**
+     * Checks if the new phase (phase) is different from the current phase (this.phase).
+     * If the phase is the same as the current one, it skips the update.
+     * But if the phase is different, the phase is updated to the new value (phase).
+     * After updating the phase, notifyChange() is called to handle any necessary updates.
+     * @param phase the new phase
+     */
     public void setPhase(Phase phase) {
         if (phase != this.phase) {
             this.phase = phase;
@@ -200,28 +255,51 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Gets the current step of the game.
+     *
+     * @return the current step
+     */
     public int getStep() {
         return step;
     }
 
+    /**
+     * Sets the current step of the game and notifies observers if the step changes.
+     *
+     * @param step the new step value
+     */
     public void setStep(int step) {
         if (step != this.step) {
             this.step = step;
             notifyChange();
         }
     }
-
+    /**
+     * Checks if the game is in step-by-step mode.
+     *
+     * @return true if the game is in step mode, false otherwise
+     */
     public boolean isStepMode() {
         return stepMode;
     }
-
+    /**
+     * Sets the step mode for the game and notifies observers if the mode changes.
+     *
+     * @param stepMode the new step mode state
+     */
     public void setStepMode(boolean stepMode) {
         if (stepMode != this.stepMode) {
             this.stepMode = stepMode;
             notifyChange();
         }
     }
-
+    /**
+     * Gets the index of a given player in the list of players.
+     *
+     * @param player the player whose index is to be returned
+     * @return the index of the player in the list, or -1 if the player is not found
+     */
     public int getPlayerNumber(@NotNull Player player) {
         if (player.board == this) {
             return players.indexOf(player);
@@ -231,17 +309,15 @@ public class Board extends Subject {
     }
 
     /**
-     * Returns the neighbour of the given space of the board in the given heading.
-     * The neighbour is returned only, if it can be reached from the given space
-     * (no walls or obstacles in either of the involved spaces); otherwise,
-     * null will be returned.
+     * Returns the neighboring space in the given direction (heading) from the provided space.
+     * The neighbor is returned only if there are no walls or obstacles blocking the way.
      *
-     * @param space   the space for which the neighbour should be computed
-     * @param heading the heading of the neighbour
-     * @return the space in the given direction; null if there is no (reachable) neighbour
+     * @param space the space for which the neighbor is to be calculated
+     * @param heading the direction in which to find the neighboring space
+     * @return the neighboring space, or null if no valid neighbor exists
      */
+
     public Space getNeighbour(@NotNull Space space, @NotNull Heading heading) {
-        // Implemented by Liam
         int x = space.x;
         int y = space.y;
         // Check if there's a wall in the given direction before calculating the neighbor
@@ -266,33 +342,48 @@ public class Board extends Subject {
 
         return getSpace(x, y);
     }
-
+    /**
+     * Returns a string representation of the current status of the game, including the current player,
+     * the move count, and the checkpoint of the current player.
+     *
+     * @return a string representing the current game status
+     */
     public String getStatusMessage() {
         // this is actually a view aspect, but for making assignment V1 easy for
         // the students, this method gives a string representation of the current
         // status of the game
 
-        // Implemented by Liam
         return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount() + ", Checkpoint = " + getCurrentPlayer().getCheckPointCounter();
 
     }
 
+    /**
+     * Increments the move count by 1 and notifies observers of the change.
+     */
     public void incrementMoveCount() {
         moveCount++;
         System.out.println("Move Count updated: " + moveCount + " on " + this);
         notifyChange();
 
     }
-
+    /**
+     * Gets the current move count.
+     *
+     * @return the current move count
+     */
     public int getMoveCount() {
         System.out.println("getMoveCount() called, value: " + moveCount);  // ✅ Debug print
         return moveCount;
     }
 
-    public void updateBoard() {
-        System.out.println("🔄 Board UI opdateres!");
+        /**
+         * Updates the board and notifies observers of the change.
+         *
+         */
+        public void updateBoard() {
+            System.out.println("🔄 Board UI opdateres!");
 
-        notifyChange();
+            notifyChange();
+        }
     }
 
-}
