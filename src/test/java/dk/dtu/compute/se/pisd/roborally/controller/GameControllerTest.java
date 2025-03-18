@@ -1,4 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
+import dk.dtu.compute.se.pisd.roborally.model.Space;
+
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
@@ -7,75 +9,211 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameControllerTest {
 
     private final int TEST_WIDTH = 8;
     private final int TEST_HEIGHT = 8;
-
     private GameController gameController;
+    private Board board;
 
     @BeforeEach
     void setUp() {
-        Board board = new Board(TEST_WIDTH, TEST_HEIGHT);
+        board = new Board(TEST_WIDTH, TEST_HEIGHT);
         gameController = new GameController(board);
-        for (int i = 0; i < 6; i++) {
-            Player player = new Player(board, "red", "Player " + i);
-            board.addPlayer(player);
-            player.setSpace(board.getSpace(i, i));
-            player.setHeading(Heading.values()[i % Heading.values().length]);
-        }
-        board.setCurrentPlayer(board.getPlayer(0));
+
+        //  Add at least one player to avoid NullPointerException
+        Player player = new Player(board, "red", "Player 1");
+        board.addPlayer(player);
+
+        // Ensure player has a valid starting space
+        Space startSpace = board.getSpace(0, 0);
+        assertNotNull(startSpace, "Start space should not be null!");
+        player.setSpace(startSpace);
+
+        player.setHeading(Heading.NORTH);
+        board.setCurrentPlayer(player);
     }
+
+
 
     @AfterEach
     void tearDown() {
         gameController = null;
     }
 
-    /**
-     * Test for Assignment V1 (can be deleted later once V1 was shown to the teacher)
-     */
+    @Test
+    void testSetup() {
+        assertNotNull(board, "Board is not initialized correctly!");
+        assertNotNull(gameController, "GameController is not initialized correctly!");
+    }
+
     @Test
     void testV1() {
         Board board = gameController.board;
-
         Player player = board.getCurrentPlayer();
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4));
 
-        Assertions.assertEquals(player, board.getSpace(0, 4).getPlayer(), "Player " + player.getName() + " should be on Space (0,4)!");
+        //  Ensure the current player exists before using it
+        assertNotNull(player, "Current player should not be null!");
+
+        Space targetSpace = board.getSpace(0, 4);
+        assertNotNull(targetSpace, "Target space (0,4) should not be null!");
+
+        gameController.moveCurrentPlayerToSpace(targetSpace);
+
+        Assertions.assertEquals(player, targetSpace.getPlayer(),
+                "Player " + player.getName() + " should be on Space (0,4)!");
     }
-
-    /*
-        The following tests should be used later for assignment V2
-
     @Test
-    void moveCurrentPlayerToSpace() {
+    void testMoveForward() {
         Board board = gameController.board;
-        Player player1 = board.getPlayer(0);
-        Player player2 = board.getPlayer(1);
+        Player player = board.getCurrentPlayer();
 
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4));
+        // Ensure the player starts on a valid space
+        assertNotNull(player.getSpace(), "Player should start on a valid space!");
 
-        Assertions.assertEquals(player1, board.getSpace(0, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
-        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() +"!");
+        //  Get the player's current position
+        Space startSpace = player.getSpace();
+        Space expectedNextSpace = board.getNeighbour(startSpace, player.getHeading());
+
+        //  Check if there is a valid space in front of the player
+        if (expectedNextSpace != null) {
+            boolean moved = gameController.moveForward(player);
+
+            //  The player should have moved
+            assertTrue(moved, "Player should have moved forward!");
+
+            //  The player should now be on the new space
+            assertEquals(player, expectedNextSpace.getPlayer(), "Player should now be on the new space!");
+        } else {
+            System.out.println("No space in front of the player - skipping move test.");
+        }
     }
-
     @Test
-    void moveForward() {
+    void testMoveForwardIntoWall() {
         Board board = gameController.board;
-        Player current = board.getCurrentPlayer();
+        Player player = board.getCurrentPlayer();
 
-        gameController.moveForward(current);
+        // Place player on a valid space
+        Space startSpace = board.getSpace(2, 2);
+        assertNotNull(startSpace, "Start space should not be null!");
+        player.setSpace(startSpace);
 
-        Assertions.assertEquals(current, board.getSpace(0, 1).getPlayer(), "Player " + current.getName() + " should beSpace (0,1)!");
-        Assertions.assertEquals(Heading.SOUTH, current.getHeading(), "Player 0 should be heading SOUTH!");
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+        //  Make sure the player faces a wall
+        player.setHeading(Heading.NORTH);
+        startSpace.getWalls().add(Heading.NORTH); // Add a wall in front
+
+        //  Try to move forward (should fail)
+        boolean moved = gameController.moveForward(player);
+
+        //  Player should not move
+        assertFalse(moved, "Player should not be able to move into a wall!");
+
+        //  Player should still be in the same space
+        assertEquals(player, startSpace.getPlayer(), "Player should remain in the same space!");
+    }
+    @Test
+    void testTurnLeft() {
+        Board board = gameController.board;
+        Player player = board.getCurrentPlayer();
+
+        // Set player to face EAST
+        player.setHeading(Heading.EAST);
+
+        //  Rotate left (should now face NORTH)
+        gameController.turnLeft(player);
+
+        //  Player should now face NORTH
+        assertEquals(Heading.NORTH, player.getHeading(), "Player should face NORTH after turning left!");
+
+        //  Player should remain in the same space
+        assertEquals(player, player.getSpace().getPlayer(), "Player should remain in the same space!");
+    }
+    @Test
+    void testTurnRight() {
+        Board board = gameController.board;
+        Player player = board.getCurrentPlayer();
+
+        //  Set player to face EAST
+        player.setHeading(Heading.EAST);
+
+        //  Rotate right (should now face SOUTH)
+        gameController.turnRight(player);
+
+        //  Player should now face SOUTH
+        assertEquals(Heading.SOUTH, player.getHeading(), "Player should face SOUTH after turning right!");
+
+        //  Player should remain in the same space
+        assertEquals(player, player.getSpace().getPlayer(), "Player should remain in the same space!");
+    }
+    @Test
+    void testMoveBackward() {
+        Board board = gameController.board;
+        Player player = board.getCurrentPlayer();
+
+        //  Place player on a valid space
+        Space startSpace = board.getSpace(3, 3);
+        assertNotNull(startSpace, "Start space should not be null!");
+        player.setSpace(startSpace);
+        player.setHeading(Heading.NORTH); // ✅ Facing NORTH
+
+        //  Get the space behind the player (should be SOUTH)
+        Space expectedSpace = board.getNeighbour(startSpace, Heading.SOUTH);
+        assertNotNull(expectedSpace, "There should be a space behind the player!");
+
+        //  Move backward (should succeed)
+        boolean moved = gameController.backward(player);
+
+        //  The player should have moved
+        assertTrue(moved, "Player should have moved backward!");
+
+        //  The player should now be on the space behind
+        assertEquals(player, expectedSpace.getPlayer(), "Player should now be in the space behind!");
+    }
+    @Test
+    void testUTurn() {
+        // Arrange: Create a board and a player
+        Board board = new Board(8, 8);
+        GameController gameController = new GameController(board);
+        Player player = new Player(board, "red", "Player 1");
+        board.addPlayer(player);
+
+        // Place the player on a space and set an initial heading
+        Space startSpace = board.getSpace(4, 4);
+        assertNotNull(startSpace, "Start space should not be null!");
+        player.setSpace(startSpace);
+        player.setHeading(Heading.NORTH); // The player starts facing NORTH
+
+        // Act: Perform a U-Turn
+        gameController.uTurn(player);
+
+        // Assert: The player should now be facing SOUTH
+        assertEquals(Heading.SOUTH, player.getHeading(), "Player should be facing SOUTH after U-Turn!");
+
+        // Act: Perform another U-Turn
+        gameController.uTurn(player);
+
+        // Assert: The player should now be back to facing NORTH
+        assertEquals(Heading.NORTH, player.getHeading(), "Player should be facing NORTH after second U-Turn!");
     }
 
-     */
 
-    // TDOD and there should be more tests added for the different assignments eventually
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // TODO: Add more tests for assignment V2
 }

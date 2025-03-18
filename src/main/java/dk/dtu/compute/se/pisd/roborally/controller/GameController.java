@@ -342,21 +342,35 @@ public boolean moveForward(@NotNull Player player) {
         player.setHeading(newDirection);
     }
 
-    // Implemented by Hannah
-    public void backward(@NotNull Player player) {
-        if (player == null || player.getSpace() == null) return; // Sikrer mod fejl
+    // Implemented by Leon
+    public boolean backward(@NotNull Player player) {
+        if (player == null || player.getSpace() == null) return false; // Sikrer mod fejl
 
         Space currentSpace = player.getSpace();
         Heading oppositeHeading = player.getHeading().opposite();
         Space newSpace = board.getNeighbour(currentSpace, oppositeHeading);
 
-        if (newSpace != null && newSpace.getPlayer() == null) {
+
+        if (newSpace == null) {
+            System.out.println("❌ Player cannot move backward beyond the board edge!");
+            return false;
+        }
+
+        if (newSpace.getPlayer() == null) {
             currentSpace.setPlayer(null);
             newSpace.setPlayer(player);
             player.setSpace(newSpace);
             board.incrementMoveCount();
+            return true;
         }
+
+        return false;
     }
+
+
+
+
+
 
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();

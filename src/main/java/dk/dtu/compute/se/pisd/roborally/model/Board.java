@@ -239,5 +239,23 @@ public class Board extends Subject {
 
         notifyChange();
     }
+    public boolean isValidSpace(Space space) {
+        if (space == null) return false; // ❌ Null space is invalid
+
+        // ✅ Check if the space exists in the board array
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (spaces[x][y] == space) {
+                    return true; // ✅ Space exists on the board
+                }
+            }
+        }
+
+        return false; // ❌ Space does not exist on the board
+    }
+
+
+
 
 }
+
