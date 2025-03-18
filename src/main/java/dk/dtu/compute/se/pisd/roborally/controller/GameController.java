@@ -259,8 +259,7 @@ public class GameController {
             }
         }
     }
-
-
+/*
     // Implemented by Liam
     public boolean moveForward(@NotNull Player player) {
         Space currentSpace = player.getSpace();
@@ -305,6 +304,51 @@ public class GameController {
             }
         }
         return false;
+    }
+*/
+public boolean moveForward(@NotNull Player player) {
+    if (player.board == board) {
+        Space space = player.getSpace();
+        Heading heading = player.getHeading();
+
+        Space target = board.getNeighbour(space, heading);
+
+        if (target != null) {
+            try {
+                moveToSpace(player, target, heading);
+                board.incrementMoveCount();
+                return true;
+                //player moved forward
+            } catch (ImpossibleMoveException e) {
+                //Don't do anything, other than catch exception
+                return false;
+                //movement failed
+            }
+        }
+    }
+    return false;
+}
+
+    public static class ImpossibleMoveException extends Throwable{
+        public ImpossibleMoveException() {
+        }
+    }
+
+    public void moveToSpace(@NotNull Player pusher, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
+        assert board.getNeighbour(pusher.getSpace(), heading) == space;
+        Player pushed = space.getPlayer();
+        if (pushed != null) {
+            Space nextSpace = board.getNeighbour(space, heading);
+            if (nextSpace != null) {
+                moveToSpace(pushed, nextSpace, heading);
+
+                assert space.getPlayer() == null : "Space for the player is not free!";
+            } else {
+                throw new ImpossibleMoveException();
+            }
+        }
+        pusher.setSpace(space);
+        space.setPlayer(pusher);
     }
 
     private void rotate(@NotNull Player player, int steps) {
