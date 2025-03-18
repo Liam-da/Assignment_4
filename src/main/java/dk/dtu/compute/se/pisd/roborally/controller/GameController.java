@@ -59,7 +59,7 @@ public class GameController {
      * Moves the game to the next step, switching players and updating the phase if necessary.
      *
      * @param currentPlayer The player currently taking action.
-     * @param step The current step in the phase.
+     * @param step          The current step in the phase.
      */
     private void advanceToNextStep(Player currentPlayer, int step) {
         int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
@@ -191,7 +191,7 @@ public class GameController {
      */
     private void executeNextStep() {
         //System.out.println("Executing next step. Current Phase: " + board.getPhase());
-        if(board.getPhase() == Phase.FINISHED){
+        if (board.getPhase() == Phase.FINISHED) {
             System.out.println("The game is over");
             return;
         }
@@ -219,12 +219,12 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
-                    for(int i = 0; i < board.getPlayersNumber(); i++) {
-                       Player player = board.getPlayer(i);
-                       List<FieldAction> actions = player.getSpace().getActions();
-                       for (int j = 0; j < actions.size(); j++) {
-                           actions.get(j).doAction(this, player.getSpace());
-                       }
+                    for (int i = 0; i < board.getPlayersNumber(); i++) {
+                        Player player = board.getPlayer(i);
+                        List<FieldAction> actions = player.getSpace().getActions();
+                        for (int j = 0; j < actions.size(); j++) {
+                            actions.get(j).doAction(this, player.getSpace());
+                        }
                     }
 
                     step++;
@@ -298,33 +298,33 @@ public class GameController {
      * @param player The player to move forward.
      * @return true if the player successfully moved forward, false otherwise.
      */
-public boolean moveForward(@NotNull Player player) {
-    if (player.board == board) {
-        Space space = player.getSpace();
-        Heading heading = player.getHeading();
+    public boolean moveForward(@NotNull Player player) {
+        if (player.board == board) {
+            Space space = player.getSpace();
+            Heading heading = player.getHeading();
 
-        Space target = board.getNeighbour(space, heading);
+            Space target = board.getNeighbour(space, heading);
 
-        if (target != null) {
-            try {
-                moveToSpace(player, target, heading);
-                board.incrementMoveCount();
-                return true;
-                //player moved forward
-            } catch (ImpossibleMoveException e) {
-                //Don't do anything, other than catch exception
-                return false;
-                //movement failed
+            if (target != null) {
+                try {
+                    moveToSpace(player, target, heading);
+                    board.incrementMoveCount();
+                    return true;
+                    //player moved forward
+                } catch (ImpossibleMoveException e) {
+                    //Don't do anything, other than catch exception
+                    return false;
+                    //movement failed
+                }
             }
         }
+        return false;
     }
-    return false;
-}
 
     /**
      * Exception indicating an impossible move.
      */
-    public static class ImpossibleMoveException extends Exception{
+    public static class ImpossibleMoveException extends Exception {
         public ImpossibleMoveException() {
         }
     }
@@ -397,7 +397,7 @@ public boolean moveForward(@NotNull Player player) {
 
 
         if (newSpace == null) {
-            System.out.println("❌ Player cannot move backward beyond the board edge!");
+            System.out.println(" Player cannot move backward beyond the board edge!");
             return false;
         }
 
@@ -411,30 +411,11 @@ public boolean moveForward(@NotNull Player player) {
 
         return false;
     }
-
-
-
-
-
-
-    public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
-        CommandCard sourceCard = source.getCard();
-        CommandCard targetCard = target.getCard();
-        if (sourceCard != null && targetCard == null) {
-            target.setCard(sourceCard);
-            source.setCard(null);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * A method called when no corresponding controller operation is implemented yet.
-     * This should eventually be removed.
-     */
-    public void notImplemented() {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
-    }
 }
+
+
+
+
+
+
+
