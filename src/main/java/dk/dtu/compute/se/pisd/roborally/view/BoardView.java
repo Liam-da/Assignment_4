@@ -22,8 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
+import dk.dtu.compute.se.pisd.roborally.model.ConveyorBelt;
+import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -88,6 +91,14 @@ public class BoardView extends VBox implements ViewObserver {
             for (int y = 0; y < board.height; y++) {
                 Space space = board.getSpace(x, y);
                 SpaceView spaceView = new SpaceView(space);
+
+                // Add conveyor belt visualization
+                for (FieldAction action : space.getActions()) {
+                    if (action instanceof ConveyorBelt) {
+                        spaceView.drawConveyorBelt(((ConveyorBelt) action).getHeading());
+                    }
+                }
+
                 spaces[x][y] = spaceView;
                 mainBoardPane.add(spaceView, x, y);
                 spaceView.setOnMouseClicked(spaceEventHandler);
@@ -110,6 +121,12 @@ public class BoardView extends VBox implements ViewObserver {
 
             // Update the status label with the board's status message
             statusLabel.setText(board.getStatusMessage());
+
+            for (int x = 0; x < board.width; x++) {
+                for (int y = 0; y < board.height; y++) {
+                    spaces[x][y].updateView(board.getSpace(x, y));
+                }
+            }
         }
     }
 

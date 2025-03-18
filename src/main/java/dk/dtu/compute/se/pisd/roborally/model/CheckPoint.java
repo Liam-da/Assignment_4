@@ -33,6 +33,7 @@ public class CheckPoint extends FieldAction {
             player.setCheckPointCounter(player.getCheckPointCounter() + 1);
             if(player.getCheckPointCounter() == 4){
                 System.out.println(player + " has won the game");
+                System.exit(0);
 
                 return true;
             }

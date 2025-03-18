@@ -35,7 +35,6 @@ import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
  * the terms board and game are used almost interchangeably.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public class Board extends Subject {
 
@@ -60,6 +59,14 @@ public class Board extends Subject {
     private boolean stepMode;
     private int moveCount;
 
+    /**
+     * The board is represented of spaces that is a 2D array of space object.
+     *
+     *
+     * @param width the numbers of columns in the board
+     * @param height the numbers of rows in the board
+     * @param boardName the given board name
+     */
     public Board(int width, int height, @NotNull String boardName) {
         this.boardName = boardName;
         this.width = width;
@@ -73,17 +80,50 @@ public class Board extends Subject {
                 spaces[x][y] = new Space(this, x, y);
             }
         }
+
+        int[][] conveyorBeltPositions = {{2, 3, Heading.EAST.ordinal()}, {4, 5, Heading.NORTH.ordinal()}, {6, 2, Heading.WEST.ordinal()}, {1, 7, Heading.SOUTH.ordinal()}, {8, 4, Heading.EAST.ordinal()}};
+        for (int[] pos : conveyorBeltPositions) {
+            int x = pos[0];
+            int y = pos[1];
+            Heading heading = Heading.values()[pos[2]];
+
+            if (spaces[x][y] != null) {
+                ConveyorBelt conveyorBelt = new ConveyorBelt();
+                conveyorBelt.setHeading(heading);
+                spaces[x][y].addAction(conveyorBelt);
+                System.out.println("Conveyor Belt Added at (" + x + ", " + y + ") → " + heading);
+            } else {
+                System.err.println("Error: Attempted to add conveyor belt to uninitialized space at (" + x + ", " + y + ")");
+
+            }
+        }
     }
 
-
+    /**
+     *The boards size is determent by the width and the height.
+     * @param width
+     * @param height
+     */
     public Board(int width, int height) {
         this(width, height, "defaultboard");
     }
 
+    /**
+     * Gets the game id, and returns it.
+     * @return
+     */
     public Integer getGameId() {
         return gameId;
     }
 
+    /**
+     * Sets the game id. If the set game id is null it will assign the new game id, else if the game id is already set,
+     * the method checks if the new value is different.
+     * If different, it throws an IllegalStateException to prevent modification.
+     *
+     * @param gameId the given game id
+     * @throws IllegalStateException to prevent modification
+     */
     public void setGameId(int gameId) {
         if (this.gameId == null) {
             this.gameId = gameId;
@@ -95,14 +135,17 @@ public class Board extends Subject {
     }
 
     public Space getSpace(int x, int y) {
-        if (x >= 0 && x < width &&
-                y >= 0 && y < height) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
             return spaces[x][y];
         } else {
             return null;
         }
     }
 
+    /**
+     * Gets the players number, and returns it.
+     * @return
+     */
     public int getPlayersNumber() {
         return players.size();
     }
@@ -122,12 +165,19 @@ public class Board extends Subject {
         }
     }
 
-    // gets the current player's turn.
+    /**
+     * Gets the current player's turn, and returns it.
+     * @return
+     */
     public Player getCurrentPlayer() {
         return current;
     }
 
-    // changes the current player and notifies.
+    /**
+     * Changes the current player and notifies.
+     *
+     * @param player the given player
+     */
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
@@ -135,7 +185,10 @@ public class Board extends Subject {
         }
     }
 
-    //Tracks step-by-step execution
+    /**
+     * Tracks step-by-step execution
+     * @return
+     */
     public Phase getPhase() {
         return phase;
     }
@@ -183,7 +236,7 @@ public class Board extends Subject {
      * (no walls or obstacles in either of the involved spaces); otherwise,
      * null will be returned.
      *
-     * @param space the space for which the neighbour should be computed
+     * @param space   the space for which the neighbour should be computed
      * @param heading the heading of the neighbour
      * @return the space in the given direction; null if there is no (reachable) neighbour
      */
@@ -223,6 +276,7 @@ public class Board extends Subject {
         return "Player = " + getCurrentPlayer().getName() + ", Move Count = " + getMoveCount() + ", Checkpoint = " + getCurrentPlayer().getCheckPointCounter();
 
     }
+
     public void incrementMoveCount() {
         moveCount++;
         System.out.println("Move Count updated: " + moveCount + " on " + this);
@@ -234,7 +288,8 @@ public class Board extends Subject {
         System.out.println("getMoveCount() called, value: " + moveCount);  // ✅ Debug print
         return moveCount;
     }
-    public void updateBoard(){
+
+    public void updateBoard() {
         System.out.println("🔄 Board UI opdateres!");
 
         notifyChange();

@@ -24,9 +24,11 @@ package dk.dtu.compute.se.pisd.roborally.view;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.CheckPoint;
+import dk.dtu.compute.se.pisd.roborally.model.ConveyorBelt;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -126,18 +128,21 @@ public class SpaceView extends StackPane implements ViewObserver {
     @Override
     public void updateView(Subject subject) {
         if (subject == this.space) {
-            this.getChildren().clear();
+            this.getChildren().removeIf(node -> node instanceof Polygon && !(node.getOpacity() == 0.7));
 
-            for (FieldAction action: space.getActions()){
+            for (FieldAction action : space.getActions()) {
                 if (action instanceof CheckPoint) {
                     Circle circle = new Circle();
-                    circle.setRadius(SPACE_WIDTH/2);
-                    this.getChildren().add( circle );
+                    circle.setRadius(SPACE_WIDTH / 2);
+                    this.getChildren().add(circle);
 
                     Text text = new Text(Integer.toString(((CheckPoint) action).getX()));
                     text.setFill(Color.YELLOW);
-                    this.getChildren().add( text );
+                    this.getChildren().add(text);
 
+                }
+                if (action instanceof ConveyorBelt) {
+                    drawConveyorBelt(((ConveyorBelt) action).getHeading());
                 }
             }
 
@@ -173,11 +178,44 @@ public class SpaceView extends StackPane implements ViewObserver {
                     rectangle.setTranslateX(-SPACE_WIDTH / 2 + WALL_THICKNESS / 2);
                     rectangle.setTranslateY(0);
                 }
-                this.getChildren().add( rectangle );
+                this.getChildren().add(rectangle);
 
             }
 
             updatePlayer();
+        }
+    }
+
+    void drawConveyorBelt(Heading heading) {
+        System.out.println("🎨 Drawing conveyor belt at " + space.x + "," + space.y + " Heading: " + heading);
+
+        Polygon arrow = new Polygon(0.0, 0.0, 15.0, 25.0, 30.0, 0.0);
+        arrow.setFill(Color.DODGERBLUE); // Improve visibility
+        arrow.setStroke(Color.WHITE);
+        arrow.setStrokeWidth(2);
+        arrow.setOpacity(0.7);
+        arrow.setRotate((90 * heading.ordinal()) % 360);
+
+        Platform.runLater(() -> {
+            this.getChildren().add(arrow);
+            arrow.toFront();
+        });
+    }
+
+    private void updatePlayer() {
+        this.getChildren().removeIf(node -> node instanceof Polygon && node.getOpacity() != 0.7); // Remove previous player arrows only
+
+        Player player = space.getPlayer();
+        if (player != null) {
+            Polygon arrow = new Polygon(0.0, 0.0, 10.0, 20.0, 20.0, 0.0);
+            try {
+                arrow.setFill(Color.valueOf(player.getColor()));
+            } catch (Exception e) {
+                arrow.setFill(Color.MEDIUMPURPLE);
+            }
+
+            arrow.setRotate((90 * player.getHeading().ordinal()) % 360);
+            this.getChildren().add(arrow);
         }
     }
 

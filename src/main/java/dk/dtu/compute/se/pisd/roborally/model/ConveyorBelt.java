@@ -19,30 +19,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-package dk.dtu.compute.se.pisd.roborally.controller;
+package dk.dtu.compute.se.pisd.roborally.model;
 
 
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.controller.FieldAction;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * This class represents a conveyor belt on a space.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 // XXX A3
-public class
-
-
-
-
-ConveyorBelt extends FieldAction {
+public class ConveyorBelt extends FieldAction {
 
     private Heading heading;
 
+    public ConveyorBelt() {
+        super();
+    }
 
     public Heading getHeading() {
         return heading;
@@ -73,5 +69,3 @@ ConveyorBelt extends FieldAction {
     }
 
 }
-
-
