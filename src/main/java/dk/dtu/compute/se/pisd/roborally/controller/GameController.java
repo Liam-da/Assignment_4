@@ -29,14 +29,25 @@ import java.util.List;
 
 
 /**
- * ...
+ * The GameController class is responsible for managing the game flow,
+ * handling player movements, executing commands, and controlling different
+ * phases of the game.
+ *
+ * This class interacts with the Board and Player objects to ensure
+ * correct game mechanics.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
+
 public class GameController {
 
     final public Board board;
 
+    /**
+     * Constructs a GameController with the specified board.
+     *
+     * @param board The game board to be controlled.
+     */
     public GameController(@NotNull Board board) {
         this.board = board;
         System.out.println("GameController initialized with Board: " + board);
@@ -44,6 +55,12 @@ public class GameController {
 
     }
 
+    /**
+     * Moves the game to the next step, switching players and updating the phase if necessary.
+     *
+     * @param currentPlayer The player currently taking action.
+     * @param step The current step in the phase.
+     */
     private void advanceToNextStep(Player currentPlayer, int step) {
         int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
         if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -81,7 +98,9 @@ public class GameController {
         }
     }
 
-    // XXX V2
+    /**
+     * Starts the programming phase where players receive and program command cards.
+     */
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -104,14 +123,20 @@ public class GameController {
         }
     }
 
-    // XXX V2
+    /**
+     * Generates a random command card for players.
+     *
+     * @return A randomly selected CommandCard.
+     */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
     }
 
-    // XXX V2
+    /**
+     * Executes the next step in the current phase of the game.
+     */
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
@@ -161,7 +186,9 @@ public class GameController {
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
-    // XXX V2
+    /**
+     * Executes the next step in the current phase of the game.
+     */
     private void executeNextStep() {
         //System.out.println("Executing next step. Current Phase: " + board.getPhase());
         if(board.getPhase() == Phase.FINISHED){
@@ -195,7 +222,7 @@ public class GameController {
                     for(int i = 0; i < board.getPlayersNumber(); i++) {
                        Player player = board.getPlayer(i);
                        List<FieldAction> actions = player.getSpace().getActions();
-                       for(int j = 0; j < actions.size(); j++) {
+                       for (int j = 0; j < actions.size(); j++) {
                            actions.get(j).doAction(this, player.getSpace());
                        }
                     }
@@ -265,6 +292,12 @@ public class GameController {
         }
     }
 
+    /**
+     * Moves a player forward in their current heading direction.
+     *
+     * @param player The player to move forward.
+     * @return true if the player successfully moved forward, false otherwise.
+     */
 public boolean moveForward(@NotNull Player player) {
     if (player.board == board) {
         Space space = player.getSpace();
@@ -288,11 +321,23 @@ public boolean moveForward(@NotNull Player player) {
     return false;
 }
 
+    /**
+     * Exception indicating an impossible move.
+     */
     public static class ImpossibleMoveException extends Exception{
         public ImpossibleMoveException() {
         }
     }
 
+
+    /**
+     * Moves a player to a specified space in a given direction, handling potential collisions.
+     *
+     * @param pusher  The player attempting to move.
+     * @param space   The target space to move to.
+     * @param heading The direction of movement.
+     * @throws ImpossibleMoveException if the move is not possible.
+     */
     public void moveToSpace(@NotNull Player pusher, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
         assert board.getNeighbour(pusher.getSpace(), heading) == space;
         Player pushed = space.getPlayer();
