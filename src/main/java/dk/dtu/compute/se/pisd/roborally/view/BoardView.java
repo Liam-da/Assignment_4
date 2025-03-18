@@ -24,7 +24,6 @@ package dk.dtu.compute.se.pisd.roborally.view;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -41,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
  * in the RoboRally game. It updates the visual representation of the game based on changes
  * to the board and player movements. It also includes a mouse event handler to facilitate
  * manual player movement for testing purposes.
- *
  * This class implements the ViewObserver interface, allowing it to be updated when the
  * state of the board changes.
  */
