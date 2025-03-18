@@ -60,7 +60,7 @@ public class BoardFactory {
             board = new Board(8, 8, "Board1");
             setupBoard1(board);
         } else if ("Board2".equals(name)) {
-            board = new Board(8, 8, "Board2");
+            board = new Board(14, 8, "Board2");
             setupBoard2(board);
         } else {
             board = new Board(8, 8, "<none>");
@@ -81,10 +81,11 @@ public class BoardFactory {
     }
 
     private void setupBoard2(Board board) {
-        addWall(board, 2, 2, Heading.EAST);
-        addWall(board, 3, 3, Heading.WEST);
-        addWall(board, 5, 5, Heading.SOUTH);
-        addWall(board, 6, 6, Heading.NORTH);
+
+        addWall(board, 4, 4, Heading.EAST);
+        addWall(board, 6, 6, Heading.WEST);
+        addWall(board, 8, 8, Heading.SOUTH);
+        addWall(board, 10, 10, Heading.NORTH);
 
 
         addCheckpoint(board, 1, 1, 1);
