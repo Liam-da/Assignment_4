@@ -28,7 +28,7 @@ public class CheckPoint extends FieldAction {
 
     public boolean doAction(GameController gameController, Space space) {
         Player player = space.getPlayer();
-        if(player.getCheckPointCounter() == x){
+        if(player.getCheckPointCounter() <= x){
             System.out.println(player + "has reached checkpoint " + x);
             player.setCheckPointCounter(player.getCheckPointCounter() + 1);
             if(player.getCheckPointCounter() == 3){

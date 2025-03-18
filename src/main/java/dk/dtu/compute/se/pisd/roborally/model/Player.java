@@ -129,7 +129,6 @@ public class Player extends Subject {
     }
     public void setCheckPointCounter(int checkPointCounter) {
         this.checkPointCounter = checkPointCounter;
-        System.out.println("checkpoint for this player is " + checkPointCounter);
         notifyChange();
 
 
