@@ -36,7 +36,6 @@ import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
  * This class is responsible for managing the grid of spaces, handling the players,
  * tracking the current player, and maintaining the game phase and step-wise progression.
  * It also provides methods for managing player movement, game status, and notifications.
- *
  */
 public class Board extends Subject {
     /**
@@ -88,8 +87,8 @@ public class Board extends Subject {
      * Constructs a new game board with the specified dimensions and name.
      * Initializes all spaces on the board.
      *
-     * @param width the number of columns in the board
-     * @param height the number of rows in the board
+     * @param width     the number of columns in the board
+     * @param height    the number of rows in the board
      * @param boardName the name of the board
      */
     public Board(int width, int height, @NotNull String boardName) {
@@ -127,7 +126,7 @@ public class Board extends Subject {
     /**
      * Constructs a new game board with the specified dimensions and a default name.
      *
-     * @param width the number of columns in the board
+     * @param width  the number of columns in the board
      * @param height the number of rows in the board
      */
     public Board(int width, int height) {
@@ -246,6 +245,7 @@ public class Board extends Subject {
      * If the phase is the same as the current one, it skips the update.
      * But if the phase is different, the phase is updated to the new value (phase).
      * After updating the phase, notifyChange() is called to handle any necessary updates.
+     *
      * @param phase the new phase
      */
     public void setPhase(Phase phase) {
@@ -275,6 +275,7 @@ public class Board extends Subject {
             notifyChange();
         }
     }
+
     /**
      * Checks if the game is in step-by-step mode.
      *
@@ -283,6 +284,7 @@ public class Board extends Subject {
     public boolean isStepMode() {
         return stepMode;
     }
+
     /**
      * Sets the step mode for the game and notifies observers if the mode changes.
      *
@@ -294,6 +296,7 @@ public class Board extends Subject {
             notifyChange();
         }
     }
+
     /**
      * Gets the index of a given player in the list of players.
      *
@@ -312,7 +315,7 @@ public class Board extends Subject {
      * Returns the neighboring space in the given direction (heading) from the provided space.
      * The neighbor is returned only if there are no walls or obstacles blocking the way.
      *
-     * @param space the space for which the neighbor is to be calculated
+     * @param space   the space for which the neighbor is to be calculated
      * @param heading the direction in which to find the neighboring space
      * @return the neighboring space, or null if no valid neighbor exists
      */
@@ -342,6 +345,7 @@ public class Board extends Subject {
 
         return getSpace(x, y);
     }
+
     /**
      * Returns a string representation of the current status of the game, including the current player,
      * the move count, and the checkpoint of the current player.
@@ -366,6 +370,7 @@ public class Board extends Subject {
         notifyChange();
 
     }
+
     /**
      * Gets the current move count.
      *
@@ -376,15 +381,15 @@ public class Board extends Subject {
         return moveCount;
     }
 
-        /**
-         * Updates the board and notifies observers of the change.
-         *
-         */
-        public void updateBoard() {
-            System.out.println("🔄 Board UI opdateres!");
+    /**
+     * Updates the board and notifies observers of the change.
+     */
+    public void updateBoard() {
+        System.out.println("🔄 Board UI opdateres!");
 
         notifyChange();
     }
+
     public boolean isValidSpace(Space space) {
         if (space == null) return false; // ❌ Null space is invalid
 
@@ -400,8 +405,31 @@ public class Board extends Subject {
         return false; // ❌ Space does not exist on the board
     }
 
+    /**
+     * Gets the name of the board.
+     *
+     * @return the name of the board
+     */
+    public String getName() {
+        return this.boardName;
+    }
 
+    /**
+     * Gets the width of the board.
+     *
+     * @return the width of the board
+     */
+    public int getWidth() {
+        return this.width;
+    }
 
-
+    /**
+     * Gets the height of the board.
+     *
+     * @return the height of the board
+     */
+    public int getHeight() {
+        return this.height;
+    }
 }
 
