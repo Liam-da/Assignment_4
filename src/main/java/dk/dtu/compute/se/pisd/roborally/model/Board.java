@@ -60,6 +60,14 @@ public class Board extends Subject {
     private boolean stepMode;
     private int moveCount;
 
+    /**
+     * The board is represented of spaces that is a 2D array of space object.
+     *
+     *
+     * @param width the numbers of columns in the board
+     * @param height the numbers of rows in the board
+     * @param boardName the given board name
+     */
     public Board(int width, int height, @NotNull String boardName) {
         this.boardName = boardName;
         this.width = width;
@@ -75,15 +83,31 @@ public class Board extends Subject {
         }
     }
 
-
+    /**
+     *The boards size is determent by the width and the height.
+     * @param width
+     * @param height
+     */
     public Board(int width, int height) {
         this(width, height, "defaultboard");
     }
 
+    /**
+     * Gets the game id, and returns it.
+     * @return
+     */
     public Integer getGameId() {
         return gameId;
     }
 
+    /**
+     * Sets the game id. If the set game id is null it will assign the new game id, else if the game id is already set,
+     * the method checks if the new value is different.
+     * If different, it throws an IllegalStateException to prevent modification.
+     *
+     * @param gameId the given game id
+     * @throws IllegalStateException to prevent modification
+     */
     public void setGameId(int gameId) {
         if (this.gameId == null) {
             this.gameId = gameId;
@@ -103,6 +127,10 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Gets the players number, and returns it.
+     * @return
+     */
     public int getPlayersNumber() {
         return players.size();
     }
@@ -122,12 +150,19 @@ public class Board extends Subject {
         }
     }
 
-    // gets the current player's turn.
+    /**
+     * Gets the current player's turn, and returns it.
+     * @return
+     */
     public Player getCurrentPlayer() {
         return current;
     }
 
-    // changes the current player and notifies.
+    /**
+     * Changes the current player and notifies.
+     *
+     * @param player the given player
+     */
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
@@ -135,7 +170,10 @@ public class Board extends Subject {
         }
     }
 
-    //Tracks step-by-step execution
+    /**
+     * Tracks step-by-step execution
+     * @return
+     */
     public Phase getPhase() {
         return phase;
     }
