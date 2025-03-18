@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
  * The SpaceView is responsible for visually displaying the state of a space on the game board,
  * including any players, walls, and actions (like checkpoints) associated with the space.
  * It reacts to changes in the state of the space and updates the view accordingly.
- *
+ * <p>
  * This class extends {@link StackPane} to provide a container that can display different graphical
  * elements (e.g., players, walls, checkpoints) in the space.
  * It implements {@link ViewObserver} to observe changes in the space and update the view accordingly.
@@ -102,18 +102,18 @@ public class SpaceView extends StackPane implements ViewObserver {
      * If there is a player in the space, an arrow is drawn to indicate the player's position and heading.
      */
     private void updatePlayer() {
+        this.getChildren().removeIf(node -> node instanceof Polygon && node.getOpacity() != 0.7); // Remove previous player arrows only
+
         Player player = space.getPlayer();
         if (player != null) {
-            Polygon arrow = new Polygon(0.0, 0.0,
-                    10.0, 20.0,
-                    20.0, 0.0 );
+            Polygon arrow = new Polygon(0.0, 0.0, 10.0, 20.0, 20.0, 0.0);
             try {
                 arrow.setFill(Color.valueOf(player.getColor()));
             } catch (Exception e) {
                 arrow.setFill(Color.MEDIUMPURPLE);
             }
 
-            arrow.setRotate((90*player.getHeading().ordinal())%360);
+            arrow.setRotate((90 * player.getHeading().ordinal()) % 360);
             this.getChildren().add(arrow);
         }
     }
@@ -201,22 +201,4 @@ public class SpaceView extends StackPane implements ViewObserver {
             arrow.toFront();
         });
     }
-
-    private void updatePlayer() {
-        this.getChildren().removeIf(node -> node instanceof Polygon && node.getOpacity() != 0.7); // Remove previous player arrows only
-
-        Player player = space.getPlayer();
-        if (player != null) {
-            Polygon arrow = new Polygon(0.0, 0.0, 10.0, 20.0, 20.0, 0.0);
-            try {
-                arrow.setFill(Color.valueOf(player.getColor()));
-            } catch (Exception e) {
-                arrow.setFill(Color.MEDIUMPURPLE);
-            }
-
-            arrow.setRotate((90 * player.getHeading().ordinal()) % 360);
-            this.getChildren().add(arrow);
-        }
-    }
-
 }
